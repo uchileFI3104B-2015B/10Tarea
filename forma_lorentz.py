@@ -31,14 +31,14 @@ def linea(x, m, n):
     return x * m + n
 
 
-def gauss(x, A, mu, sigma):
+def lorentz(x, A, mu, sigma):
     '''función gaussiana para aproximación'''
-    return  A * norm(loc=mu, scale=sigma).pdf(x)
+    return  A * cauchy(loc=mu, scale=sigma).pdf(x)
 
 
 def funcion_1(x, A, mu, sigma, m, n):
     ''' primera funcion para aproximar'''
-    return linea(x, m, n) - gauss(x, A, mu, sigma)
+    return linea(x, m, n) - lorentz(x, A, mu, sigma)
 
 
 def crear_datos(param_opt):
@@ -57,7 +57,7 @@ mostrar_datos([wlength, fnu], "Wavelength",
 param_opt, pcov = curve_fit(funcion_1, wlength, fnu,
                             p0=[0.1e-16, 6550, 10, 0.04e-16/200, 1])
 x_modelo, y_modelo = crear_datos(param_opt)
-print("Parametros optimos gauss: Amplitud= {}, promedio{}, sigma{}".format(param_opt[0], param_opt[1], param_opt[2]))
+print("Parametros optimos perfil de Lorentz: Amplitud= {}, promedio{}, sigma{}".format(param_opt[0], param_opt[1], param_opt[2]))
 print("Parametros optimos recta: Pendiente={}, coef de posicion={}".format(param_opt[3],param_opt[4]))
 mostrar_datos([x_modelo, y_modelo],  "Wavelength",
               "$F_\\nu [erg s^{-1} Hz^{-1} cm^{-2}]$",
