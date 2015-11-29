@@ -50,7 +50,7 @@ def crear_datos(param_opt):
     return x, y
 
 
-def test_ks(fnu):
+def test_ks(fnu, funcion_1):
     '''Funcion que realiza en test de kolmogorov-smirnov'''
     return stats.kstest(fnu, funcion_1)
 
