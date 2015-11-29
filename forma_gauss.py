@@ -3,6 +3,7 @@
 from __future__ import division
 import numpy as np
 import matplotlib.pyplot as plt
+from scipy import stats
 from scipy.stats import norm
 from scipy.optimize import (leastsq, curve_fit)
 import pdb
@@ -49,6 +50,11 @@ def crear_datos(param_opt):
     return x, y
 
 
+def test_ks(fnu, funcion_1):
+    '''Funcion que realiza en test de kolmogorov-smirnov'''
+    return stats.kstest(fnu, funcion_1)
+
+
 # main
 wlength, fnu = importar_datos("espectro.dat")
 mostrar_datos([wlength, fnu], "Wavelength",
@@ -62,5 +68,5 @@ print("Parametros optimos recta: Pendiente={}, coef de posicion={}".format(param
 mostrar_datos([x_modelo, y_modelo],  "Wavelength",
               "$F_\\nu [erg s^{-1} Hz^{-1} cm^{-2}]$",
               "Modelo recta + Gaussiana", [1.28e-16, 1.42e-16])
-
 plt.show()
+D, p = test_ks(fnu, funcion_1)
