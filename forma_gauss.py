@@ -61,6 +61,6 @@ print("Parametros optimos gauss: Amplitud= {}, promedio{}, sigma{}".format(param
 print("Parametros optimos recta: Pendiente={}, coef de posicion={}".format(param_opt[3],param_opt[4]))
 mostrar_datos([x_modelo, y_modelo],  "Wavelength",
               "$F_\\nu [erg s^{-1} Hz^{-1} cm^{-2}]$",
-              "espectro", [1.28e-16, 1.42e-16])
+              "Modelo recta + Gaussiana", [1.28e-16, 1.42e-16])
 
 plt.show()
