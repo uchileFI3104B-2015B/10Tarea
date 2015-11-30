@@ -16,10 +16,11 @@ def importar_datos(txt):
     return data[:, 0], data[:, 1]
 
 
-def mostrar_datos(data, xlabel, ylabel, title, ylim):
+def mostrar_datos(w, f, data, xlabel, ylabel, title, ylim):
     ''' función para graficar los datos'''
     ax, fig = plt.subplots()
-    plt.plot(data[0], data[1])
+    plt.plot(w, f, label="datos originales")
+    plt.plot(data[0], data[1], label="modelo")
     fig.set_title(title)
     fig.set_xlabel(xlabel)
     fig.set_ylabel(ylabel)
@@ -50,24 +51,15 @@ def crear_datos(param_opt):
     return x, y
 
 
-def test_ks(fnu, funcion_1):
-    '''Funcion que realiza en test de kolmogorov-smirnov'''
-    return stats.kstest(fnu, funcion_1)
-
-
 # main
 wlength, fnu = importar_datos("espectro.dat")
-mostrar_datos([wlength, fnu], "Wavelength",
-              "$F_\\nu [erg s^{-1} Hz^{-1} cm^{-2}]$",
-              "espectro", [1.28e-16, 1.42e-16])
 param_opt, pcov = curve_fit(funcion_1, wlength, fnu,
                             p0=[0.1e-16, 6550, 10, 0.04e-16/200, 1])
 x_modelo, y_modelo = crear_datos(param_opt)
 print("Parametros optimos perfil de Lorentz: Amplitud= {}, promedio{}, sigma{}".format(param_opt[0], param_opt[1], param_opt[2]))
 print("Parametros optimos recta: Pendiente={}, coef de posicion={}".format(param_opt[3],param_opt[4]))
-mostrar_datos([x_modelo, y_modelo],  "Wavelength",
+mostrar_datos(wlength, fnu, [x_modelo, y_modelo],  "Wavelength",
               "$F_\\nu [erg s^{-1} Hz^{-1} cm^{-2}]$",
               "modelo Perfil Lorentz", [1.28e-16, 1.42e-16])
 
 plt.show()
-D, p = test_ks(fnu, funcion_1)
