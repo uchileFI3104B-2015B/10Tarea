@@ -39,6 +39,10 @@ def llamar_archivo(nombre):
     return x, y
 
 
+def rectagauss(x, a, b, A, mu, sigma):
+    return (a + b * x) - (A * scipy.stats.norm(loc=mu, scale=sigma).pdf(x))
+
+
 def fitear_implementado(func, x, y):
     '''
     Retorna los coeficientes b y a correspondientes a la ecuacion lineal que
