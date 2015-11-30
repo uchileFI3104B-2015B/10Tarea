@@ -101,33 +101,74 @@ while deltachi2 > 0.00001:
 # Test de Kolmogorov-Smirnov
 xmin = np.min(data[0])
 xmax = np.max(data[0])
-ymod1_orden = np.sort(modelo1(np.linspace(xmin, xmax, 10000), act_params1))
-ymod2_orden = np.sort(modelo2(np.linspace(xmin, xmax, 10000), act_params2))
-y_ordenado = np.sort(data[1])
+xrang = np.linspace(xmin, xmax, 10000)
+ymod1_orden = np.sort(modelo1(xrang, act_params1)) / 10.0**16
+ymod2_orden = np.sort(modelo2(xrang, act_params2)) / 10.0**16
+y_ordenado = np.sort(data[1]) / 10.0**16
 CDF_mod1 = cdf(y_ordenado, ymod1_orden)
 CDF_mod2 = cdf(y_ordenado, ymod2_orden)
 N = len(y_ordenado)
 Dn_mod1, prob_mod1 = kstest(y_ordenado, cdf, args=(ymod1_orden,))
 Dn_mod2, prob_mod2 = kstest(y_ordenado, cdf, args=(ymod2_orden,))
-print "Dn modelo 1 : ", Dn_mod1
-print "Nivel de confianza modelo 1 :", prob_mod1
-print "Dn modelo 2 : ", Dn_mod2
-print "Nivel de confianza modelo 2 :", prob_mod2
+
+# Resultados
+print ""
+print "Modelo Gaussiano:"
+print "chi2 =", chi21, "10^-32 [erg^2 s^-2 Hz^-2 cm^-4]"
+print "A =", act_params1[0], "10^-16 [erg s^-1 Hz^-1 cm^-2]"
+print "mu =", act_params1[1], "Angstrom"
+print "sigma =", act_params1[2], "Angstrom"
+print "a =", act_params1[3], "10^-16 [erg s^-1 Hz^-1 cm^-2 Angstrom^-1]"
+print "b =", act_params1[4], "10^-16 [erg s^-1 Hz^-1 cm^-2]"
+print "Dn =", Dn_mod1
+print "Nivel de confianza:", prob_mod1
+
+print ""
+print "Modelo Lorentziano:"
+print "chi2 =", chi22, "10^-32 [erg^2 s^-1 Hz^-2 cm^-4]"
+print "A =", act_params2[0], "10^-16 [erg s^-1 Hz^-1 cm^-2]"
+print "mu =", act_params2[1], "Angstrom"
+print "sigma =", act_params2[2], "Angstrom"
+print "a =", act_params2[3], "10^-16 [erg s^-1 Hz^-1 cm^-2 Angstrom^-1]"
+print "b =", act_params2[4], "10^-16 [erg s^-1 Hz^-1 cm^-2]"
+print "Dn =", Dn_mod2
+print "Nivel de confianza:", prob_mod2
 
 
 # Plots
+plt.clf()
 plt.figure(1)
-plt.plot(data[0], data[1]/10.0**16, 'k')
-plt.plot(data[0], modelo1(data[0], act_params1)/10.0**16, 'r')
+plt.plot(data[0], data[1]/10.0**16, 'k--', label='Espectro observado')
+plt.plot(xrang, modelo1(xrang, act_params1)/10.0**16, 'r',
+         label='Perfil gaussiano sobre recta')
+plt.plot(xrang, modelo2(xrang, act_params2)/10.0**16, 'b',
+         label='Perfil lorentziano sobre recta')
+plt.xlabel('Longitud de onda [$\AA$]')
+plt.ylabel('$F_{\\nu} \, [erg \, s^{-1}Hz^{-1}cm^{-2}]$')
+plt.title('Mejores fits a espectro observado')
+plt.legend(loc=4)
+plt.xlim([6450, 6750])
+plt.savefig('fits.eps')
 plt.figure(2)
-plt.plot(data[0], data[1]/10.0**16, 'k')
-plt.plot(data[0], modelo2(data[0], act_params2)/10.0**16, 'b')
+plt.plot(y_ordenado, np.arange(N) / (1.0*N), '-^', drawstyle='steps-post',
+         label='CDF observada inf')
+plt.plot(y_ordenado, np.arange(1, N+1) / (1.0*N), '-.', drawstyle='steps-post',
+         label='CDF observada sup')
+plt.plot(y_ordenado, CDF_mod1, '-x', drawstyle='steps-post',
+         label='CDF modelo gaussiano')
+plt.xlabel('$F_{\\nu} \, [erg \, s^{-1}Hz^{-1}cm^{-2}]$')
+plt.title('Funci'u'ó''n de distribuci'u'ó''n acumulada')
+plt.legend(loc=2)
+plt.savefig('ksgauss.eps')
 plt.figure(3)
-plt.plot(y_ordenado, np.arange(N) / (1.0*N), '-^', drawstyle='steps-post')
-plt.plot(y_ordenado, np.arange(1, N+1) / (1.0*N), '-.', drawstyle='steps-post')
-plt.plot(y_ordenado, CDF_mod1, '-x', drawstyle='steps-post')
-plt.figure(4)
-plt.plot(y_ordenado, np.arange(N) / (1.0*N), '-^', drawstyle='steps-post')
-plt.plot(y_ordenado, np.arange(1, N+1) / (1.0*N), '-.', drawstyle='steps-post')
-plt.plot(y_ordenado, CDF_mod2, '-x', drawstyle='steps-post')
+plt.plot(y_ordenado, np.arange(N) / (1.0*N), '-^', drawstyle='steps-post',
+         label='CDF observada inf')
+plt.plot(y_ordenado, np.arange(1, N+1) / (1.0*N), '-.', drawstyle='steps-post',
+         label='CDF observada sup')
+plt.plot(y_ordenado, CDF_mod2, '-x', drawstyle='steps-post',
+         label='CDF modelo lorentziano')
+plt.xlabel('$F_{\\nu} \, [erg \, s^{-1}Hz^{-1}cm^{-2}]$')
+plt.title('Funci'u'ó''n de distribuci'u'ó''n acumulada')
+plt.legend(loc=2)
+plt.savefig('kslorentz.eps')
 plt.show()
