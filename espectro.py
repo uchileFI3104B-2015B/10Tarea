@@ -44,6 +44,10 @@ def rectagauss(x, a, b, A, mu, sigma):
     return (a + b * x) - (A * scipy.stats.norm(loc=mu, scale=sigma).pdf(x))
 
 
+def rectalorentz(x, a, b, A, mu, sigma):
+    return (a + b * x) - (A * scipy.stats.cauchy(loc=mu, scale=sigma).pdf(x))
+
+
 def fitear_implementado(func, x, y, seed=False):
     '''
     Retorna los coeficientes b y a correspondientes a la ecuacion lineal que
@@ -52,9 +56,65 @@ def fitear_implementado(func, x, y, seed=False):
     if seed is False:
         popt, pcov = scipy.optimize.curve_fit(func, x, y)
         return popt
-    else: 
+    else:
         popt, pcov = scipy.optimize.curve_fit(func, x, y, p0=seed)
         return popt
+
+
+def resultados_gauss(x, y, seeds=False):
+    # Ajustar recta-gaussiana
+    popt = fitear_implementado(rectagauss, x, y, seed=seeds)
+    # Escribir resultados
+    print '----------------------------------------------'
+    print 'f(x) = (a + b * x) - A * exp((x - mu) / sigma)'
+    print 'a = ', popt[0]
+    print 'b = ', popt[1]
+    print 'A = ', popt[2]
+    print 'mu = ', popt[3]
+    print 'sigma = ', popt[4]
+    print '----------------------------------------------'
+    # Graficar
+    p.plot(x, rectagauss(x, *popt), 'r--')
+    p.plot(x, y, 'g^')
+    p.axis([6450, 6675, 1.28e-16, 1.42e-16])
+    p.xlabel('Angstrom')
+    p.ylabel('erg / s / Hz / cm^2')
+    p.show()
+
+
+def resultados_lorentz(x, y, seeds=False):
+    # Ajustar recta-gaussiana
+    popt = fitear_implementado(rectalorentz, x, y, seed=seeds)
+    # Escribir resultados
+    print '----------------------------------------------'
+    print 'f(x) = (a + b * x) - A / (pi * (1 + (x - mu)**2 / sigma**2))'
+    print 'a = ', popt[0]
+    print 'b = ', popt[1]
+    print 'A = ', popt[2]
+    print 'mu = ', popt[3]
+    print 'sigma = ', popt[4]
+    print '----------------------------------------------'
+    # Graficar
+    p.plot(x, rectalorentz(x, *popt), 'r--')
+    p.plot(x, y, 'g^')
+    p.axis([6450, 6675, 1.28e-16, 1.42e-16])
+    p.xlabel('Angstrom')
+    p.ylabel('erg / s / Hz / cm^2')
+    p.show()
+
+
+def comparacion(x, y, seeds):
+    # Ajuste
+    popt1 = fitear_implementado(rectagauss, x, y, seed=seeds)
+    popt2 = fitear_implementado(rectalorentz, x, y, seed=seeds)
+    # Graficos
+    p.plot(x, rectagauss(x, *popt1), 'r--')
+    p.plot(x, rectalorentz(x, *popt2), 'g--')
+    p.plot(x, y, 'y^')
+    p.axis([6450, 6675, 1.28e-16, 1.42e-16])
+    p.xlabel('Angstrom')
+    p.ylabel('erg / s / Hz / cm^2')
+    p.show()
 
 
 def muestra_sintetica(x, y):
@@ -119,22 +179,7 @@ x, y = llamar_archivo('espectro.dat')
 # Semillas para el ajuste
 seeds = [9.1e-17, 7.4e-21, 1e-17, 6563., 7.]
 
-# Ajustar recta-gaussiana
-popt = fitear_implementado(rectagauss, x, y, seed=seeds)
-
-print '----------------------------------------------'
-print 'f(x) = (a + b * x) - A * exp((x - mu) / sigma)'
-print 'a = ', popt[0]
-print 'b = ', popt[1]
-print 'A = ', popt[2]
-print 'mu = ', popt[3]
-print 'sigma = ', popt[4]
-print '----------------------------------------------'
-
-p.plot(x, rectagauss(x, *popt), 'r--')
-#p.plot(x, y, 'g')
-p.plot(x, y, 'g^')
-p.axis([6450, 6675, 1.28e-16, 1.42e-16])
-p.xlabel('Angstrom')
-p.ylabel('erg / s / Hz / cm^2')
-p.show()
+# Resultados
+resultados_gauss(x, y, seeds)
+resultados_lorentz(x, y, seeds)
+comparacion(x, y, seeds)
