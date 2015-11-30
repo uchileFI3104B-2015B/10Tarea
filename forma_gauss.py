@@ -26,6 +26,7 @@ def mostrar_datos(w, f, data, xlabel, ylabel, title, ylim):
     fig.set_xlabel(xlabel)
     fig.set_ylabel(ylabel)
     fig.set_ylim(ylim)
+    plt.legend(loc=3)
     plt.savefig("{}.jpg".format(title))
 
 
@@ -75,7 +76,7 @@ def mostrar_prob_acum(f_d, f_m):
     plt.plot(f_d, np.arange(1, N+1) / N, '-.', drawstyle='steps-post')
     plt.plot(f_d, CDF_model, '-x', drawstyle='steps-post')
 
-    
+
 # main
 wlength, fnu = importar_datos("espectro.dat")
 param_opt, pcov = curve_fit(funcion_1, wlength, fnu,

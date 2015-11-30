@@ -26,6 +26,7 @@ def mostrar_datos(w, f, data, xlabel, ylabel, title, ylim):
     fig.set_xlabel(xlabel)
     fig.set_ylabel(ylabel)
     fig.set_ylim(ylim)
+    plt.legend(loc=3)
     plt.savefig("{}.jpg".format(title))
 
 
