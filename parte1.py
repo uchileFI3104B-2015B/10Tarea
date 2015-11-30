@@ -35,7 +35,13 @@ def gaussiana(p, x):
     return y
 
 
-def plot(x, y, y1):
+def lorentz(p, x):
+    A, mu, sigma = p
+    y = A * scipy.stats.cauchy(loc=mu, scale=sigma).pdf(x)
+    return y
+
+
+def plot(x, y, y1, y2):
     fig = plt.figure()
     fig.clf()
     ax1 = fig.add_subplot(111)
@@ -45,18 +51,37 @@ def plot(x, y, y1):
     ax1.set_xlabel("")
     ax1.set_ylabel("")
     plt.legend(loc=4)
-    plt.savefig("a.png")
+    plt.savefig("gauss.png")
+    fig.clf()
+    ax2 = fig.add_subplot(111)
+    ax2.plot(x, y, '+', label="Datos Experimentales")
+    ax2.plot(x, y2, '-', label="Ajuste Lorentz")
+    ax2.plot()
+    ax2.set_xlabel("")
+    ax2.set_ylabel("")
+    plt.legend(loc=4)
+    plt.savefig("lorentz.png")
     plt.draw()
     plt.show()
 
 
-def modelo1(p, x):
+def modelo_gauss(p, x):
     a, b, A, mu, sigma = p
     p1 = a, b
     p2 = A, mu, sigma
     y1 = recta(p1, x)
     y2 = gaussiana(p2, x)
     return y1 - y2
+
+
+def modelo_lorentz(p, x):
+    a, b, A, mu, sigma = p
+    p1 = a, b
+    p2 = A, mu, sigma
+    y1 = recta(p1, x)
+    y2 = lorentz(p2, x)
+    return y1 - y2
+
 
 
 def experimental():
@@ -66,8 +91,13 @@ def experimental():
     return x_ex, y_ex
 
 
-def residuo(p, x_exp, y_exp):
-    err = y_exp - modelo1(p, x_exp)
+def residuo_gauss(p, x_exp, y_exp):
+    err = y_exp - modelo_gauss(p, x_exp)
+    return err
+
+
+def residuo_lorentz(p, x_exp, y_exp):
+    err = y_exp - modelo_lorentz(p, x_exp)
     return err
 
 
@@ -76,8 +106,11 @@ p1 = 1e-16 , 0
 p2 = 1e-16, 6550, 1
 p0 = p1[0], p1[1], p2[0], p2[1], p2[2]
 x_exp, y_exp = experimental()
-pf = leastsq(residuo, p0, args=(x_exp, y_exp))
+aprox_1 = leastsq(residuo_gauss, p0, args=(x_exp, y_exp))
+aprox_2 = leastsq(residuo_lorentz, p0, args=(x_exp, y_exp))
 # plot
-p_f = pf[0]
-y1 = modelo1(p_f, x_exp)
-plot(x_exp, y_exp, y1)
+p_gauss = aprox_1[0]
+p_lorentz = aprox_2[0]
+y1 = modelo_gauss(p_gauss, x_exp)
+y2 = modelo_lorentz(p_lorentz, x_exp)
+plot(x_exp, y_exp, y1, y2)
