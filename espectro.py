@@ -41,11 +41,26 @@ def llamar_archivo(nombre):
 
 
 def rectagauss(x, a, b, A, mu, sigma):
+    '''
+    Retorna el valor de una funcion lineal menos una funcion gaussiana
+    evaluado en un x dado para los parametros ingresados.
+    '''
     return (a + b * x) - (A * scipy.stats.norm(loc=mu, scale=sigma).pdf(x))
 
 
 def rectalorentz(x, a, b, A, mu, sigma):
+    '''
+    Retorna el valor de una funcion lineal menos una funcion lorentziana
+    evaluado en un x dado para los parametros ingresados.
+    '''
     return (a + b * x) - (A * scipy.stats.cauchy(loc=mu, scale=sigma).pdf(x))
+
+
+def chi(func, x, y, parametros):
+    chi2 = 0
+    for i in range(len(x)):
+        chi2 += (y[i] - func(x[i], *parametros))**2
+    return chi2
 
 
 def fitear_implementado(func, x, y, seed=False):
@@ -62,6 +77,9 @@ def fitear_implementado(func, x, y, seed=False):
 
 
 def resultados_gauss(x, y, seeds=False):
+    '''
+    Imprime y grafica los resultados del ajuste gaussiano a los datos x, y
+    '''
     # Ajustar recta-gaussiana
     popt = fitear_implementado(rectagauss, x, y, seed=seeds)
     # Escribir resultados
@@ -72,6 +90,7 @@ def resultados_gauss(x, y, seeds=False):
     print 'A = ', popt[2]
     print 'mu = ', popt[3]
     print 'sigma = ', popt[4]
+    print 'chi**2 = ', chi(rectagauss, x, y, popt)
     print '----------------------------------------------'
     # Graficar
     p.plot(x, rectagauss(x, *popt), 'r--')
@@ -83,6 +102,9 @@ def resultados_gauss(x, y, seeds=False):
 
 
 def resultados_lorentz(x, y, seeds=False):
+    '''
+    Imprime y grafica los resultados del ajuste lorentziano a los datos x, y
+    '''
     # Ajustar recta-gaussiana
     popt = fitear_implementado(rectalorentz, x, y, seed=seeds)
     # Escribir resultados
@@ -93,6 +115,7 @@ def resultados_lorentz(x, y, seeds=False):
     print 'A = ', popt[2]
     print 'mu = ', popt[3]
     print 'sigma = ', popt[4]
+    print 'chi**2 = ', chi(rectalorentz, x, y, popt)
     print '----------------------------------------------'
     # Graficar
     p.plot(x, rectalorentz(x, *popt), 'r--')
@@ -103,7 +126,11 @@ def resultados_lorentz(x, y, seeds=False):
     p.show()
 
 
-def comparacion(x, y, seeds):
+def comparacion(x, y, seeds=False):
+    '''
+    Compara los graficos de los ajustes gaussianos y lorentzianos a los
+    datos x, y. Se realiza el ajuste a partir de las semillas ingresadas.
+    '''
     # Ajuste
     popt1 = fitear_implementado(rectagauss, x, y, seed=seeds)
     popt2 = fitear_implementado(rectalorentz, x, y, seed=seeds)
@@ -115,58 +142,6 @@ def comparacion(x, y, seeds):
     p.xlabel('Angstrom')
     p.ylabel('erg / s / Hz / cm^2')
     p.show()
-
-
-def muestra_sintetica(x, y):
-    '''
-    A partir de los datos x, y, crea una muestra del mismo largo de estos
-    arreglos utilizando sus mismos valores.
-    '''
-    n = len(x)
-    xs = np.zeros(n)
-    ys = np.zeros(n)
-    for i in range(n):
-        j = np.random.randint(n)
-        xs[i] = x[j]
-        ys[i] = y[j]
-    return xs, ys
-
-
-def intervalo_confianza(func, x, y, N, porcentaje):
-    '''
-    Determina el intervalo de confianza con un portentaje dado a partir de N
-    calculos independientes, todo a partir de los arreglos x, y.
-    '''
-    a = np.zeros(N)
-    b = np.zeros(N)
-    mu = np.zeros(N)
-    sigma = np.zeros(N)
-    A = np.zeros(N)
-    p = (100. - porcentaje) / 100.
-    for i in range(N):
-        xs, ys = muestra_sintetica(x, y)
-        popt = fitear_implementado(func, x, y)
-        a[i] = popt[0]
-        b[i] = popt[1]
-        A[i] = popt[2]
-        mu[i] = popt[3]
-        sigma[i] = popt[4]
-    a = np.sort(a, kind='mergesort')
-    b = np.sort(b, kind='mergesort')
-    A = np.sort(A, kind='mergesort')
-    mu = np.sort(mu, kind='mergesort')
-    sigma = np.sort(sigma, kind='mergesort')
-    lla = a[int(N * p / 2.)]
-    ula = a[int(N * (1. - p / 2.))]
-    llb = b[int(N * p / 2.)]
-    ulb = b[int(N * (1. - p / 2.))]
-    llA = A[int(N * p / 2.)]
-    ulA = A[int(N * (1. - p / 2.))]
-    llmu = mu[int(N * p / 2.)]
-    ulmu = mu[int(N * (1. - p / 2.))]
-    llsigma = sigma[int(N * p / 2.)]
-    ulsigma = sigma[int(N * (1. - p / 2.))]
-    return lla, ula, llb, ulb, llA, ulA, llmu, ulmu, llsigma, ulsigma
 
 
 #############################################################################
