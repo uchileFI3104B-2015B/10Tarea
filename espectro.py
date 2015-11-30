@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 #############################################################################
-#                                TAREA 9                                    #
+#                                TAREA 10                                   #
 #############################################################################
 
 '''
@@ -33,19 +33,19 @@ def llamar_archivo(nombre):
     que el codigo.
     '''
     cur_dir = os.getcwd()
-    arch = np.loadtxt(os.path.join(cur_dir, 'data', nombre))
+    arch = np.loadtxt(os.path.join(cur_dir, nombre))
     x = arch[:, 0]
     y = arch[:, 1]
     return x, y
 
 
-def fitear_implementado(x, y):
+def fitear_implementado(func, x, y):
     '''
     Retorna los coeficientes b y a correspondientes a la ecuacion lineal que
     mejor fitea los vectores x e y segun curve_fit.
     '''
-    popt, pcov = curve_fit(lineal, x, y)
-    return popt[0]
+    popt, pcov = curve_fit(func, x, y)
+    return popt
 
 
 def muestra_sintetica(x, y):
@@ -63,7 +63,7 @@ def muestra_sintetica(x, y):
     return xs, ys
 
 
-def intervalo_confianza(x, y, N, porcentaje):
+def intervalo_confianza(func, x, y, N, porcentaje):
     '''
     Determina el intervalo de confianza con un portentaje dado a partir de N
     calculos independientes, todo a partir de los arreglos x, y.
@@ -72,7 +72,8 @@ def intervalo_confianza(x, y, N, porcentaje):
     p = (100. - porcentaje) / 100.
     for i in range(N):
         xs, ys = muestra_sintetica(x, y)
-        b[i] = biseccion(xs, ys)
+        popt = fitear_implementado(func, x, y)
+        b[i] = popt[0]
     b = np.sort(b, kind='mergesort')
     ll = b[int(N * p / 2.)]
     ul = b[int(N * (1. - p / 2.))]
@@ -83,11 +84,11 @@ def intervalo_confianza(x, y, N, porcentaje):
 #                                                                           #
 #############################################################################
 
-p.plot(x, lineal(x, ll), 'r--')
-p.plot(x, lineal(x, ul), 'g--')
-p.plot(x, lineal(x, b3), 'b--')
-p.plot(x, y, 'y^')
-p.axis([0., 2.2, -400, 1200])
-p.xlabel('Distancia [Mpc]')
-p.ylabel('Velocidad [km/s]')
+x, y = llamar_archivo('espectro.dat')
+
+p.plot(x, y, 'g')
+p.plot(x, y, 'g^')
+p.axis([6450, 6675, 1.28e-16, 1.42e-16])
+p.xlabel('Angstrom')
+p.ylabel('erg / s / Hz / cm^2')
 p.show()
