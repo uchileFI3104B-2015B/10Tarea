@@ -119,16 +119,21 @@ print('''Parametros optimos perfil de Lorentz: Amplitud= {},
       promedio = {}, sigma = {}'''.format(param_opt_l[0],
                                           param_opt_l[1], param_opt_l[2]))
 print(" ")
+print('''Parametros optimos recta (Lorentz): Pendiente = {},
+      coef de posicion = {}'''.format(param_opt_l[3],param_opt_l[4]))
+print(" ")
 print("Valor chi cuadrado (Lorentz)= ", chi_l)
 print('''Parametros optimos modelo Gaussiano: Amplitud= {},
       promedio = {}, sigma = {}'''.format(param_opt_g[0],
                                           param_opt_g[1], param_opt_g[2]))
 print(" ")
+print('''Parametros optimos recta (Gauss): Pendiente = {},
+      coef de posicion = {}'''.format(param_opt_g[3],param_opt_g[4]))
+print(" ")
 print("Valor chi cuadrado (Gauss) = ", chi_g)
 print(" ")
 
-print('''Parametros optimos recta: Pendiente = {},
-      coef de posicion = {}'''.format(param_opt_l[3],param_opt_l[4]))
+
 print(" ")
 mostrar_datos(wlength, fnu, [x_modelo_l, y_modelo_l], [x_modelo_g, y_modelo_g],
               "Wavelength[Angstrom]",
@@ -140,9 +145,9 @@ f_modelo_l_sorted, f_data_sorted = generar_prob_acumulada(wlength, fnu,
 f_modelo_g_sorted, f_data_sorted = generar_prob_acumulada(wlength, fnu,
                                                           param_opt_g, modelo_g)
 mostrar_prob_acum(f_modelo_l_sorted, f_data_sorted,
-                  "distribucion acumulada para perfil de Lorentz")
+                  "probabilidad acumulada para perfil de Lorentz")
 mostrar_prob_acum(f_modelo_g_sorted, f_data_sorted,
-                  "distribucion acumulada para modelo Gaussiano" )
+                  "probabilidad acumulada para modelo Gaussiano" )
 Dn_scipy_l, conf_l = kstest(f_data_sorted, cdf, args=(f_modelo_l_sorted,))
 Dn_scipy_g, conf_g = kstest(f_data_sorted, cdf, args=(f_modelo_g_sorted,))
 print "Dn_scipy para perfil de lorentz   : ", Dn_scipy_l
