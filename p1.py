@@ -9,9 +9,11 @@ Este script toma los datos de espectro.dat y los ajusta de forma "gaussiana"
 y "lorentziana".
 '''
 
+
 def gauss(x, m, n, A, mu, sigma):
     g = m * x + n - A * scipy.stats.norm(loc=mu, scale=sigma).pdf(x)
     return g
+
 
 def lorentz(x, m, n, A, mu, sigma):
     l = m * x + n - A * scipy.stats.cauchy(loc=mu, scale=sigma).pdf(x)
@@ -21,7 +23,7 @@ def lorentz(x, m, n, A, mu, sigma):
 datos = np.loadtxt('espectro.dat')
 l = datos[:, 0]  # longitud de onda (A)
 f = datos[:, 1]  # flujo (erg / s / Hz / cm2)
-n = len(l)  #número de datos
+n = len(l)  # número de datos
 mu = sum(l) / n
 sigma = np.sqrt(sum((l - mu)**2) / n)
 
