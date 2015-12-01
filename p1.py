@@ -43,23 +43,32 @@ def modelo_2(x, a, b, A, mu, sigma):
     return linea(x, a, b) - lorenz(A, mu, sigma, x)
 
 
+def chi_cuadrado(x_data,y_data, modelo_1, a0):
+
+    x_modelo = x_data
+    y_modelo = modelo_1(x_modelo, *a0)
+    chi_2 = (y_data - y_modelo) ** 2
+    return np.sum(chi_2)
+
 datos = np.loadtxt('espectro.dat')
 x_data = datos[:,0]
 y_data = datos[:,1]
-
-plt.plot(x_data,y_data,'co-')
-
-
-N = 10000
+N1 = 10000
 a0 = 1.3e-16, 3.2996632996633799e-20, 0.1e-16, 6560, 1
-
 a_opt, a_covar = curve_fit(modelo_1, x_data, y_data, a0)
 a_opt1, a_covar1 = curve_fit(modelo_2, x_data, y_data, a0)
-x = np.linspace(6400,6700,N)
+a = chi_cuadrado(x_data,y_data, modelo_1, a0)
+b= chi_cuadrado(x_data,y_data, modelo_2, a0)
+print "chi modelo Gaussiana =",a
+print "Chi modelo Lorenz =",b
+
+
+#plots
+x = np.linspace(6400,6700,N1)
+plt.plot(x_data,y_data,'co-')
 plt.plot(x, modelo_1(x, *a_opt))
 plt.plot(x, modelo_1(x, *a_opt1),color='deeppink')
 plt.ylabel("$ Flujo [erg s-1 Hz-1 cm-2]$", fontsize=15)
 plt.xlabel("$ Longitud \ de \ onda [\AA]$", fontsize=15)
 plt.title('$Espectro \ observado \ y \ fit$', fontsize=15)
-
 plt.show()
