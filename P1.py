@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
+from __future__ import division
 from scipy import stats
 import numpy as np
 from scipy.optimize import (leastsq, curve_fit)
+import matplotlib.pyplot as plt
 
 """
 Este programa extrae los datos de espectro.dat, modela el espectro
@@ -10,22 +12,18 @@ usando K-S.
 """
 
 def gauss(A, mu, sigma, x):
-    g = A * stats.norm(loc=mu, scale=sigma).pdf(x)
-    return g
+    return A * stats.norm(loc=mu, scale=sigma).pdf(x)
     
 def lorentz(A, mu, sigma, x):
-    l = A * stats.cauchy(loc=mu, scale=sigma).pdf(x)
-    return l
+    return A * stats.cauchy(loc=mu, scale=sigma).pdf(x)
     
 def linea(x, m, n):
     return x * m + n
         
-def modelo_g(x, param):
-    A, mu, sigma, m, n = param
+def modelo_gauss(x, A, mu, sigma, m, n):
     return linea(x, m, n) - gauss(A, mu, sigma, x)
     
-def modelo_l(x, param):
-    A, mu, sigma, m, n = param
+def modelo_lorentz(x, A, mu, sigma, m, n):
     return linea(x, m, n) - lorentz(A, mu, sigma, x)
     
 def chi_2(datos, modelo, param):
@@ -35,7 +33,7 @@ def chi_2(datos, modelo, param):
     param es un array que contiene (A, mu, sigma, m y n).
     '''
     x_m = datos[0]
-    y_m = modelo(x_m, param)
+    y_m = modelo(x_m, param[0], param[1], param[2], param[3], param[4])
     return np.sum((datos[1] - y_m) ** 2)
     
 def prob_acumulada(datos, modelo):
@@ -43,8 +41,27 @@ def prob_acumulada(datos, modelo):
     Esto es para hacer K-S usando scipy.
     '''
     return np.array([np.sum(modelo <= yy) for yy in datos]) / len(modelo)
-    
 
+def def_datos(param_opt, modelo):
+    '''
+    Crea un set de datos x,y según el modelo obtenido por curvefit.
+    '''
+    x = np.linspace(6.4600e+03, 6.6596e+03, 122)
+    y = modelo(x, param_opt[0], param_opt[1], param_opt[2], param_opt[3],
+                  param_opt[4])
+    return x, y   
+
+def graficar_datos(l, f, datosl, datosg, xlabel, ylabel, title, ylim):
+    ax, fig = plt.subplots()
+    plt.plot(l, f, label="Datos originales")
+    plt.plot(datosl[0], datosl[1], label="Modelo Perfil Lorentz")
+    plt.plot(datosg[0], datosg[1], label="Modelo Gaussiano")
+    fig.set_title(title)
+    fig.set_xlabel(xlabel)
+    fig.set_ylabel(ylabel)
+    fig.set_ylim(ylim)
+    plt.legend(loc=4)
+    plt.savefig("GraficoP1.jpg")
 
 #Main
     
@@ -52,7 +69,34 @@ d1 = np.loadtxt('espectro.dat')
 l_onda = d1[:,0]
 f_nu = d1[:,1]
 
-param_opt_l, pcov = curve_fit(modelo_l, l_onda, f_nu,
-                            p0)
-param_opt_g, pcov = curve_fit(modelo_g, l_onda, f_nu,
-                            p0)
+param_opt_l, pcov = curve_fit(modelo_lorentz, l_onda, f_nu,
+                            p0=[0.1e-16,6560,5,0.03e-16/200,1])
+param_opt_g, pcov = curve_fit(modelo_gauss, l_onda, f_nu,
+                            p0=[0.1e-16,6560,5,0.03e-16/200,1])
+                            
+chi_l = chi_2([l_onda, f_nu], modelo_lorentz, param_opt_l) #Se sacan los chi_2
+chi_g = chi_2([l_onda, f_nu], modelo_gauss, param_opt_g)
+
+print('''Parametros optimos perfil de Lorentz: Amplitud= {},
+      promedio = {}, sigma = {}'''.format(param_opt_l[0],
+                                          param_opt_l[1], param_opt_l[2]))
+print('''Parametros optimos recta (Lorentz): Pendiente = {},
+      coef de posicion = {}'''.format(param_opt_l[3],param_opt_l[4]))
+print("Chi cuadrado (Lorentz)= ", chi_l)
+print('''Parametros optimos modelo Gaussiano: Amplitud= {},
+      promedio = {}, sigma = {}'''.format(param_opt_g[0],
+                                          param_opt_g[1], param_opt_g[2]))
+print('''Parametros optimos recta (Gauss): Pendiente = {},
+      coef de posicion = {}'''.format(param_opt_g[3],param_opt_g[4]))
+print("Chi cuadrado (Gauss) = ", chi_g)      
+
+x_modelo_l, y_modelo_l = def_datos(param_opt_l, modelo_lorentz)
+x_modelo_g, y_modelo_g = def_datos(param_opt_g, modelo_gauss)
+
+graficar_datos(l_onda, f_nu, [x_modelo_l, y_modelo_l], [x_modelo_g, y_modelo_g],
+               "Longitud Onda [Angstrom]",
+               "$F_\\nu [erg s^{-1} Hz^{-1} cm^{-2}]$",
+               "Modelos Perfil Lorentz y Gauss", [1.28e-16, 1.42e-16])
+               
+plt.show()
+
