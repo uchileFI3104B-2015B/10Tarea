@@ -59,6 +59,14 @@ def func_a_minimizar_lorentz(x, a, b, A, mu, sigma):
     params = a, b, A, mu, sigma
     return func_modelo_lorentz(params, x)
 
+def chi_cuadrado(x_data, y_data, modelo, params):
+    x_modelo = x_data
+    y_modelo = modelo(params, x_modelo)
+    chi_cuad = (y_data - y_modelo) ** 2
+    Chi_cuad = np.sum(chi_cuad)
+    return Chi_cuad
+
+
 # Main
 
 # Leer el archivo, datos experimentales
@@ -69,7 +77,7 @@ fnu = datos[:,1]
 # Setup
 
 # Adivinanza parametros. Vector de la forma (a, b, A, mu, sigma)
-# Recta a * x + b = y ; Gauss A amplitud, mu centro, sigma varianza.
+# Recta a * x + b = y ; Gauss y Lorentz A amplitud, mu centro, sigma varianza.
 a0 = 0, 1.39e-16, 0.1e-16, 6560, 10
 
 # Calcula parametros optimos. Gauss y Lorentz
@@ -80,6 +88,12 @@ params_opt_gauss = resultado_gauss[0]
 resultado_lorentz = curve_fit(func_a_minimizar_lorentz, w_length, fnu, a0)
 print "Parametros (a,b,A,mu,sigma) Lorentz: ", resultado_lorentz[0]
 params_opt_lorentz = resultado_lorentz[0]
+
+# Chi cuadrado
+chi_gauss = chi_cuadrado(w_length, fnu, func_modelo_gauss, a0)
+chi_lorentz = chi_cuadrado(w_length, fnu, func_modelo_lorentz, a0)
+print "Chi cuadrado (Gauss):", chi_gauss
+print "Chi cuadrado (Lorentz):", chi_lorentz
 
 # Plot Gauss, Lorentz y datos experimentales
 y_optimo_gauss = func_modelo_gauss(params_opt_gauss, w_length)
