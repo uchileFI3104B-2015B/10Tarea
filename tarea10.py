@@ -63,8 +63,8 @@ def cdf(data, model):
 # Datos
 wavelength = np.loadtxt("espectro.dat", usecols=[0])
 Fnu = np.loadtxt("espectro.dat", usecols=[1])
-pendiente_adivin = (Fnu[-1] - Fnu[0]) / (wavelength[-1] - wavelength[0])
-adivinanza = [1e-20, 1.39*(1e-16), 0.1*(1e-16), 6570, 1]  # m, n, A, mu, sigma
+pendiente, coef_posic = np.polyfit(wavelength, Fnu, 1)
+adivinanza = [pendiente, coef_posic, 0.1e-16, 6570, 1]  # m, n, A, mu, sigma
 x = np.linspace(min(wavelength), max(wavelength), 100)
 
 # Modelo 1
@@ -109,8 +109,7 @@ Dn_critico = ks_dist.ppf(1 - alpha) / np.sqrt(len(Fnu))
 print "Dn_critico = ", Dn_critico
 
 
-# Plots
-
+# Plot
 plt.figure(1)
 plt.plot(wavelength, Fnu, color='darkcyan', drawstyle='steps-post',
          label='Datos')
@@ -121,4 +120,15 @@ plt.plot(x, modelo_2(x, m2, n2, A2, mu2, sigma2), color='fuchsia',
 plt.xlabel('Wavelength [$\AA$]', fontsize=16)
 plt.ylabel('$F_v$[ergs$^{-1}$Hz$^{-1}$cm$^{-2}$]', fontsize=16)
 plt.legend(loc='lower right')
+plt.savefig('Fits_espectro.eps')
+
+plt.figure(2)
+plt.plot(wavelength, Fnu, color='darkcyan', drawstyle='steps-post',
+         label='Datos', linewidth=2.0)
+plt.plot(x, pendiente*x + coef_posic, label='Ajuste lineal',
+         linewidth=2.0, color='brown')
+plt.xlabel('Wavelength [$\AA$]', fontsize=16)
+plt.ylabel('$F_v$[ergs$^{-1}$Hz$^{-1}$cm$^{-2}$]', fontsize=16)
+plt.legend(loc='lower right')
+plt.savefig('polyfit.eps')
 plt.show()
