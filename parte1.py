@@ -101,6 +101,11 @@ def residuo_lorentz(p, x_exp, y_exp):
     return err
 
 
+def chi_cuadrado(p, x, y, f):
+    S = np.sum((y - f(p, x)) ** 2)
+    return S
+
+
 # inicializacion
 p1 = 1e-16 , 0
 p2 = 1e-16, 6550, 1
@@ -114,3 +119,5 @@ p_lorentz = aprox_2[0]
 y1 = modelo_gauss(p_gauss, x_exp)
 y2 = modelo_lorentz(p_lorentz, x_exp)
 plot(x_exp, y_exp, y1, y2)
+print chi_cuadrado(p_gauss, x_exp, y_exp, modelo_gauss)
+print chi_cuadrado(p_lorentz, x_exp, y_exp, modelo_gauss)
