@@ -184,6 +184,7 @@ print 'Ajuste Gaussiano'
 print 'Distacia Maxima entre CDF (manual) =', Dng_m
 print 'Distacia critica al 5% (manual) =', Dng_c
 print 'Nivel de confianza (manual) =', Cg
+print 'alpha (manual) =', 1 - Cg
 
 graficar_cdf(y_dg, cdfg)
 
@@ -192,6 +193,7 @@ print 'Ajuste Lorentziano'
 print 'Distacia Maxima entre CDF (manual) =', Dnl_m
 print 'Distacia critica al 5% (manual) =', Dnl_c
 print 'Nivel de confianza (manual) =', Cl
+print 'alpha (manual) =', 1 - Cl
 
 graficar_cdf(y_dl, cdfl)
 
@@ -203,6 +205,7 @@ print 'Ajuste Gaussiano'
 print 'Distacia Maxima entre CDF (implementado) =', Dng_m
 print 'Distacia critica al 5% (implementado) =', Dng_c
 print 'Nivel de confianza (implementado) =', Cg
+print 'alpha (implementado) =', 1 - Cg
 
 graficar_cdf(y_dg, cdfg)
 
@@ -211,5 +214,6 @@ print 'Ajuste Lorentziano'
 print 'Distacia Maxima entre CDF (implementado) =', Dnl_m
 print 'Distacia critica al 5% (implementado) =', Dnl_c
 print 'Nivel de confianza (implementado) =', Cl
+print 'alpha (implementado) =', 1 - Cl
 
 graficar_cdf(y_dl, cdfl)
