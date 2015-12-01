@@ -11,6 +11,7 @@ from scipy.stats import (kstest, kstwobign)
 En este código se busca aproximar algo
 '''
 
+
 def recta(parametros, x):
     m, n = parametros
     return m * x + n
@@ -45,6 +46,7 @@ def modelo_2(x, m, n, A, mu, sigma):
     parametros_lorentz = [A, mu, sigma]
     return recta(parametros_recta, x) - Lorentz(parametros_lorentz, x)
 
+
 def chi2(data, parametros_modelo, funcion_modelo):
     x_datos = data[0]
     y_datos = data[1]
@@ -61,7 +63,7 @@ def cdf(data, model):
 # Datos
 wavelength = np.loadtxt("espectro.dat", usecols=[0])
 Fnu = np.loadtxt("espectro.dat", usecols=[1])
-pendiente_adivin = (Fnu[-1]-Fnu[0])/(wavelength[-1]- wavelength[0])
+pendiente_adivin = (Fnu[-1] - Fnu[0]) / (wavelength[-1] - wavelength[0])
 adivinanza = [1e-20, 1.39*(1e-16), 0.1*(1e-16), 6570, 1]  # m, n, A, mu, sigma
 x = np.linspace(min(wavelength), max(wavelength), 100)
 
@@ -69,7 +71,8 @@ x = np.linspace(min(wavelength), max(wavelength), 100)
 param_optimo1, param_covar1 = curve_fit(modelo_1, wavelength, Fnu, adivinanza)
 m1, n1, A1, mu1, sigma1 = param_optimo1
 chi2_1 = chi2([wavelength, Fnu], param_optimo1, modelo_1)
-Dn_1, prob_1 = kstest(np.sort(Fnu), cdf, args=(np.sort(modelo_1(x, m1, n1, A1, mu1, sigma1)),))
+Dn_1, prob_1 = kstest(np.sort(Fnu), cdf,
+                      args=(np.sort(modelo_1(x, m1, n1, A1, mu1, sigma1)),))
 
 print 'Primer modelo: recta menos gaussiana'
 print 'Pendiente               :', m1
@@ -86,7 +89,8 @@ print ''
 param_optimo2, param_covar2 = curve_fit(modelo_2, wavelength, Fnu, adivinanza)
 m2, n2, A2, mu2, sigma2 = param_optimo2
 chi2_2 = chi2([wavelength, Fnu], param_optimo2, modelo_2)
-Dn_2, prob_2 = kstest(np.sort(Fnu), cdf, args=(np.sort(modelo_2(x, m2, n2, A2, mu2, sigma2)),))
+Dn_2, prob_2 = kstest(np.sort(Fnu), cdf,
+                      args=(np.sort(modelo_2(x, m2, n2, A2, mu2, sigma2)),))
 print 'Segundo modelo: recta menos perfil de Lorentz'
 print 'Pendiente               :', m2
 print 'Coeficiente de posicion :', n2
