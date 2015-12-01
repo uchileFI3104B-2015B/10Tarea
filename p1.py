@@ -37,11 +37,11 @@ popt2, pcov2 = curve_fit(recta_lorentz, wavelength, fnu,
                          [1e-16, 1e-20, 1e-17, mean, sigma])
 fig = plt.figure(1)
 plt.clf()
-plt.plot(wavelength, fnu, 'o', label='Datos')
-plt.plot(wavelength, recta_gaussiana(wavelength, *popt1), 'ro:',
-         label='Ajuste recta-gaussiana', alpha=0.4)
-plt.plot(wavelength, recta_lorentz(wavelength, *popt2), 'go:',
-         label='Ajuste recta-lorentz', alpha=0.4)
+plt.plot(wavelength, fnu, 'o', label='Datos', alpha=0.4, color='g')
+plt.plot(wavelength, recta_gaussiana(wavelength, *popt1), color='b',
+         label='Ajuste recta-gaussiana', linewidth=1.5,)
+plt.plot(wavelength, recta_lorentz(wavelength, *popt2), color='r',
+         label='Ajuste recta-lorentz', linewidth=1.5,)
 plt.xlabel('Longitud de onda [$\AA$]')
 plt.ylabel('Frecuencia [$erg$ $s^{-1} Hz^{-1} cm^{-2}$]')
 plt.legend(loc=4)
