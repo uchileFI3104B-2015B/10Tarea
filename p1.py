@@ -14,9 +14,9 @@ from scipy.stats import kstwobign
 '''
 Este script modela 5 parametros a la vez a partir de los datos de
 espectro.dat, al pltear se observa un segmento del espectro de una fuente
-que muesta continuo (con una leve pendiente) y una linea de absorcion, se modela
-el primero con una linea recta (2parametros) y el segundo con una gaussiana
-o con un perfil de lorentz
+que muesta continuo (con una leve pendiente) y una linea de absorcion, se
+modela el primero con una linea recta (2parametros) y el segundo con una
+gaussiana o con un perfil de lorentz
 '''
 
 
@@ -42,6 +42,7 @@ def gaussiana(x, A, mu, sigma):
     '''
     return A * scipy.stats.norm(loc=mu, scale=sigma).pdf(x)
 
+
 def Lorentz(x, A, mu, sigma):
     '''
     modela linea de absorsion a traves del perfil de loretnz
@@ -49,17 +50,19 @@ def Lorentz(x, A, mu, sigma):
     return A * scipy.stats.cauchy(loc=mu, scale=sigma).pdf(x)
 
 
-def espectroGauss(x, a, b , A, mu, sigma):
+def espectroGauss(x, a, b, A, mu, sigma):
     '''
     modela espectro total, con continuo y linea de absorcion con gauss
     '''
-    return linea(x, a, b) - gaussiana(x, A , mu, sigma)
+    return linea(x, a, b) - gaussiana(x, A, mu, sigma)
 
-def espectroLorentz(x, a, b , A, mu, sigma):
+
+def espectroLorentz(x, a, b, A, mu, sigma):
     '''
     modela espectro total, con continuo y linea de absorcion con lorentz
     '''
-    return linea(x, a, b) - Lorentz(x, A , mu, sigma)
+    return linea(x, a, b) - Lorentz(x, A, mu, sigma)
+
 
 def mejor_fit(x_data, y_data, a0):
     '''
@@ -80,16 +83,16 @@ def grafico(x_data, y_data, ag_opt, al_opt):
     plt.plot(x_data, espectroGauss(x_data, *ag_opt), label='Ajuste')
     plt.xlabel('Longitud de Onda $[\AA]$')
     plt.ylabel('$F_{v} [erg s-1 Hz-1 cm-2]$')
-    plt.title('Espectro de datos con ajuste Lineal y Gauss')
-    plt.legend()
+    plt.title('Espectro de datos observados vs ajuste Lineal y Gaussiana')
+    plt.legend(loc="lower right")
 
     plt.figure(2)
     plt.plot(x_data, y_data, 'c-o', label='Datos Observados')
     plt.plot(x_data, espectroLorentz(x_data, *al_opt), 'm', label='Ajuste')
     plt.xlabel('Longitud de Onda $[\AA]$')
     plt.ylabel('$F_{v} [erg s-1 Hz-1 cm-2]$')
-    plt.title('Espectro de datos con ajuste Lineal y Gauss')
-    plt.legend()
+    plt.title('Espectro de datos observados vs ajuste Lineal y Perfil de Lorentz')
+    plt.legend(loc="lower right")
     plt.show()
 
 
@@ -100,23 +103,32 @@ def chi_cuadrado(x_data, y_data, ag, al):
     y_gauss = espectroGauss(x_data, *ag)
     chi_2_g = (y_data - y_gauss) ** 2
     chi_2_l = (y_data - y_lorentz) ** 2
-    return chi_2_g, chi_2_l
+    return np.sum(chi_2_g), np.sum(chi_2_l)
 
 
 def cdf(data, model):
+    '''
+    funcion auxiliar para calcular dn
+    '''
     return np.array([np.sum(model <= yy) for yy in data]) / len(model)
 
 
 def dn(x_data, y_data, ag, al):
+    '''
+    Calcula dn para cada modelo a partir de los datos y los parametros
+    del ajuste
+    '''
     xmin = np.min(x_data)
     xmax = np.max(x_data)
-    yg_model_sorted = np.sort(espectroGauss(np.linspace(xmin, xmax, 1000), *ag))
+    yg_model_sorted = np.sort(espectroGauss(np.linspace(xmin, xmax, 1000),
+                                            *ag))
     yl_model_sorted = np.sort(espectroLorentz(np.linspace(xmin, xmax, 1000),
                                               *al))
     y_data_sorted = np.sort(y_data)
     N = len(y_data_sorted)
+
     # Determina Dn critico
-    ks_dist = kstwobign() # two-sided, aproximacion para big N
+    ks_dist = kstwobign()  # two-sided, aproximacion para big N
     alpha = 0.05
     Dn_critico = ks_dist.ppf(1 - alpha) / np.sqrt(N)
     # Determina Dn de los modelos
@@ -130,8 +142,6 @@ def dn(x_data, y_data, ag, al):
     print "Dn_scipy con Perfil de Lorentz  : ", Dn_l_scipy
     print "Nivel de confianza con Perfil de Lorentz: ", prob_l_scipy
 
-
-
 # Main
 
 # descarga datos
@@ -142,7 +152,27 @@ A0 = 1e-20, 1 * 1e-16, 1 * 1e-16, 6570, 1
 AG_opt, AL_opt = mejor_fit(longitud, flujo, A0)
 # plots
 grafico(longitud, flujo, AG_opt, AL_opt)
-#calculo chi cuadrado para cada modelo
+# calculo chi cuadrado para cada modelo
 chig, chil = chi_cuadrado(longitud, flujo, AG_opt, AL_opt)
+
 # dn
 dn(longitud, flujo, AG_opt, AL_opt)
+
+# Parametros:
+print ""
+print "Modelo Gaussiano:"
+print "chi2 =", chig, "10^-32 [erg^2 s^-2 Hz^-2 cm^-4]"
+print "A =", AG_opt[2], "10^-16 [erg s^-1 Hz^-1 cm^-2 Angstrom]"
+print "mu =", AG_opt[3], "Angstrom"
+print "sigma =", AG_opt[4], "Angstrom"
+print "a =", AG_opt[0], "10^-16 [erg s^-1 Hz^-1 cm^-2 Angstrom^-1]"
+print "b =", AG_opt[1], "10^-16 [erg s^-1 Hz^-1 cm^-2]"
+
+print ""
+print "Modelo Lorentziano:"
+print "chi2 =", chil, "10^-32 [erg^2 s^-1 Hz^-2 cm^-4]"
+print "A =", AL_opt[2], "10^-16 [erg s^-1 Hz^-1 cm^-2 Angstrom]"
+print "mu =", AL_opt[3], "Angstrom"
+print "sigma =", AL_opt[4], "Angstrom"
+print "a =", AL_opt[0], "10^-16 [erg s^-1 Hz^-1 cm^-2 Angstrom^-1]"
+print "b =", AL_opt[1], "10^-16 [erg s^-1 Hz^-1 cm^-2]"
