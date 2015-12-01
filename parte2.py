@@ -1,5 +1,8 @@
 '''
-Este script
+Este script utiliza el test de Kolmogorov-Smirnov para determinar la
+probabilidad asociada a la hipotesis nula de cada modelo y para determinar:
+a) si los modelos son aceptables,
+y b) cual modelo es mejor de acuerdo a este test.
 '''
 from __future__ import division
 import numpy as np
