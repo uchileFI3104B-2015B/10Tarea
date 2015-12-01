@@ -5,6 +5,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import scipy.stats
 from scipy.optimize import curve_fit
+from scipy.stats import (kstest, kstwobign)
 
 '''
 En este código se busca aproximar algo
@@ -53,33 +54,58 @@ def chi2(data, parametros_modelo, funcion_modelo):
     return np.sum(chi2)
 
 
+def cdf(data, model):
+    return np.array([np.sum(model <= yy) for yy in data]) / len(model)
+
 # Main
 # Datos
 wavelength = np.loadtxt("espectro.dat", usecols=[0])
 Fnu = np.loadtxt("espectro.dat", usecols=[1])
 pendiente_adivin = (Fnu[-1]-Fnu[0])/(wavelength[-1]- wavelength[0])
 adivinanza = [1e-20, 1.39*(1e-16), 0.1*(1e-16), 6570, 1]  # m, n, A, mu, sigma
+x = np.linspace(min(wavelength), max(wavelength), 100)
 
 # Modelo 1
 param_optimo1, param_covar1 = curve_fit(modelo_1, wavelength, Fnu, adivinanza)
 m1, n1, A1, mu1, sigma1 = param_optimo1
 chi2_1 = chi2([wavelength, Fnu], param_optimo1, modelo_1)
+Dn_1, prob_1 = kstest(np.sort(Fnu), cdf, args=(np.sort(modelo_1(x, m1, n1, A1, mu1, sigma1)),))
+
+print 'Primer modelo: recta menos gaussiana'
+print 'Pendiente               :', m1
+print 'Coeficiente de posicion :', n1
+print 'Amplitud                :', A1
+print 'mu                      :', mu1
+print 'sigma                   :', sigma1
+print 'Chi2                    :', chi2_1
+print "Dn                      : ", Dn_1
+print "Nivel de confianza      : ", prob_1
+print ''
 
 # Modelo 2
 param_optimo2, param_covar2 = curve_fit(modelo_2, wavelength, Fnu, adivinanza)
 m2, n2, A2, mu2, sigma2 = param_optimo2
 chi2_2 = chi2([wavelength, Fnu], param_optimo2, modelo_2)
-
-print 'Primer modelo: recta menos gaussiana'
-print '[m, n, A, mu, sigma]:',param_optimo1
-print 'Chi2 :', chi2_1
-print ''
+Dn_2, prob_2 = kstest(np.sort(Fnu), cdf, args=(np.sort(modelo_2(x, m2, n2, A2, mu2, sigma2)),))
 print 'Segundo modelo: recta menos perfil de Lorentz'
-print '[m, n, A, mu, sigma]:',param_optimo2
-print 'Chi2 :', chi2_2
+print 'Pendiente               :', m2
+print 'Coeficiente de posicion :', n2
+print 'Amplitud                :', A2
+print 'mu                      :', mu2
+print 'sigma                   :', sigma2
+print 'Chi2                    :', chi2_2
+print "Dn                      : ", Dn_2
+print "Nivel de confianza      : ", prob_2
+print ''
 
-x = np.linspace(min(wavelength), max(wavelength), 100)
+# Calculo Dn critico
+ks_dist = kstwobign()
+alpha = 0.05
+Dn_critico = ks_dist.ppf(1 - alpha) / np.sqrt(len(Fnu))
+print "Dn_critico = ", Dn_critico
 
+
+# Plots
 
 plt.figure(1)
 plt.plot(wavelength, Fnu, color='darkcyan', drawstyle='steps-post',
