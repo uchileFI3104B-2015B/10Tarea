@@ -84,7 +84,7 @@ ax.plot(y_data_sorted, CDF_lorentz, '-x', drawstyle='steps-post',
          label='Ajuste recta-lorentz', color='r')
 plt.legend(loc=2)
 plt.title('Funciones de probabilidad acumulada')
-ax.set_xlabel('Longitud de onda [$\AA$]')
+ax.set_xlabel('Frecuencia [$erg$ $s^{-1} Hz^{-1} cm^{-2}$]')
 
 # zoom en el plot
 axins = zoomed_inset_axes(ax, 6, loc=6)
