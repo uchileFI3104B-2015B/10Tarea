@@ -45,20 +45,20 @@ def plot(x, y, y1, y2):
     fig = plt.figure()
     fig.clf()
     ax1 = fig.add_subplot(111)
-    ax1.plot(x, y, '+', label="Datos Experimentales")
+    ax1.plot(x, y, '+', label="Espectro Experimental")
     ax1.plot(x, y1, '-', label="Ajuste Gaussiano")
     ax1.plot()
-    ax1.set_xlabel("")
-    ax1.set_ylabel("")
+    ax1.set_xlabel("Longitud de Onda [$\AA$]")
+    ax1.set_ylabel("Frecuencia [$erg s^{-1} Hz^{-1} cm^{-2}$]")
     plt.legend(loc=4)
     plt.savefig("gauss.png")
     fig.clf()
     ax2 = fig.add_subplot(111)
-    ax2.plot(x, y, '+', label="Datos Experimentales")
+    ax2.plot(x, y, '+', label="Espectro Experimental")
     ax2.plot(x, y2, '-', label="Ajuste Lorentz")
     ax2.plot()
-    ax2.set_xlabel("")
-    ax2.set_ylabel("")
+    ax2.set_xlabel("Longitud de Onda [$\AA$]")
+    ax2.set_ylabel("Frecuencia [$erg s^{-1} Hz^{-1} cm^{-2}$]")
     plt.legend(loc=4)
     plt.savefig("lorentz.png")
     plt.draw()
@@ -83,7 +83,6 @@ def modelo_lorentz(p, x):
     return y1 - y2
 
 
-
 def experimental():
     ex = leer_archivo("espectro.dat")
     x_ex = ex[:, 0]
@@ -105,9 +104,8 @@ def chi_cuadrado(p, x, y, f):
     S = np.sum((y - f(p, x)) ** 2)
     return S
 
-
 # inicializacion
-p1 = 1e-16 , 0
+p1 = 1e-16, 0
 p2 = 1e-16, 6550, 1
 p0 = p1[0], p1[1], p2[0], p2[1], p2[2]
 x_exp, y_exp = experimental()
