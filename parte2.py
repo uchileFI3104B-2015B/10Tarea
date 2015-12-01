@@ -78,10 +78,11 @@ def graficos_ks(x_exp, y_exp, modelo, p_opt, titulo):
     CDF = cdf(y_exp_ord, y_modelo_ord)
     N = len(y_exp_ord)
     ax, fig = plt.subplots()
-    plt.plot(y_exp_ord, np.arange(N) / N, '-^', drawstyle='steps-post', label="Datos")
+    plt.plot(y_exp_ord, np.arange(N) / N, '-^', drawstyle='steps-post',
+             label="Datos")
     plt.plot(y_exp_ord, np.arange(1, N+1) / N, '-.', drawstyle='steps-post')
     plt.plot(y_exp_ord, CDF, '-+', drawstyle='steps-post', label="Modelo")
-    fig.set_xlabel( "Longitud de Onda [$\AA$]")
+    fig.set_xlabel("Longitud de Onda [$\AA$]")
     fig.set_ylabel("Probabilidad")
     plt.legend(loc=2)
     plt.savefig("{}".format(titulo))
