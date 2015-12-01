@@ -94,7 +94,7 @@ def resultados_gauss(x, y, seeds=False):
     print '----------------------------------------------'
     # Graficar
     p.plot(x, rectagauss(x, *popt), 'r--')
-    p.plot(x, y, 'g^')
+    p.plot(x, y, 'y^')
     p.axis([6450, 6675, 1.28e-16, 1.42e-16])
     p.xlabel('Angstrom')
     p.ylabel('erg / s / Hz / cm^2')
@@ -119,7 +119,7 @@ def resultados_lorentz(x, y, seeds=False):
     print '----------------------------------------------'
     # Graficar
     p.plot(x, rectalorentz(x, *popt), 'r--')
-    p.plot(x, y, 'g^')
+    p.plot(x, y, 'y^')
     p.axis([6450, 6675, 1.28e-16, 1.42e-16])
     p.xlabel('Angstrom')
     p.ylabel('erg / s / Hz / cm^2')
