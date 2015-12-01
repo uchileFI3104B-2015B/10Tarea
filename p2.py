@@ -65,12 +65,12 @@ print "Dn_scipy 2   : ", Dn_scipy_2
 print "Nivel de confianza 2 : ", prob_scipy_2
 
 
-# Test KS propio (scipy kstwobign)
 CDF_gauss = np.array([np.sum(y1_func_sorted <= yy)
                      for yy in y_data_sorted]) / len(y1_func_sorted)
 CDF_lorentz = np.array([np.sum(y2_func_sorted <= yy)
                        for yy in y_data_sorted]) / len(y2_func_sorted)
 
+# plot
 fig = plt.figure(1)
 plt.clf()
 ax = fig.add_subplot(111)
@@ -86,8 +86,8 @@ plt.legend(loc=2)
 plt.title('Funciones de probabilidad acumulada')
 ax.set_xlabel('Longitud de onda [$\AA$]')
 
+# zoom en el plot
 axins = zoomed_inset_axes(ax, 6, loc=6)
-
 axins.plot(y_data_sorted, np.arange(N) / N, '-^', drawstyle='steps-post',
          color='b')
 axins.plot(y_data_sorted, np.arange(1, N+1) / N, '-.', drawstyle='steps-post',
@@ -104,18 +104,9 @@ axins.set_xlim(x1, x2) # apply the x-limits
 axins.set_ylim(y1, y2) # apply the y-limits
 mark_inset(ax, axins, loc1=1, loc2=4, fc="none", ec="0.5")
 
-
 plt.draw()
 plt.show()
 plt.savefig('figura2.png')
-
-max1_1 = np.max(CDF_gauss - np.arange(N) / N)
-max2_1 = np.max(np.arange(1,N+1)/N - CDF_gauss)
-max1_2 = np.max(CDF_lorentz - np.arange(N) / N)
-max2_2 = np.max(np.arange(1,N+1)/N - CDF_lorentz)
-
-Dn1 = max(max1_1, max2_1)
-Dn2 = max(max1_2, max2_2)
 
 
 # Dn critico
@@ -123,9 +114,3 @@ ks_dist = kstwobign() # aproximacion para N grande
 alpha = 0.05
 Dn_critico = ks_dist.ppf(1 - alpha) / np.sqrt(N)
 print "Dn_critico = ", Dn_critico
-
-# confianza
-print "Dn 1 = ", Dn1
-print "nivel de confianza 1  :", 1 - ks_dist.cdf(Dn1 * np.sqrt(N))
-print "Dn 2 = ", Dn2
-print "nivel de confianza 2  :", 1 - ks_dist.cdf(Dn2 * np.sqrt(N))

@@ -63,7 +63,6 @@ print 'mejores parametros caso1'
 print popt1
 print 'mejores parametros caso 2'
 print popt2
-
 print 'valor chi cuadrado gaussiana:'
 print chi_gauss(wavelength, fnu, *popt1)
 print 'valor chi cuadrado lorentz:'
