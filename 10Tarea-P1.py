@@ -15,22 +15,38 @@ import scipy.stats
 
 
 def perfil_ajuste_gauss(x,a,b,c,mu,sigma):
+    '''
+    Modela el continuo con la linea de absorcion como funcion lineal
+    menos una funcion gaussiana, siendo a y b los parametros de la funcion
+    lineal ax+b, y c, mu, sigma los parametros de la funcion gaussiana
+    con c siendo la amplitud.
+    '''
     continuo = a*x+b
     g = c * scipy.stats.norm(loc=mu, scale=sigma).pdf(x)
     return continuo-g
 
 
 def perfil_ajuste_lorentz(x,a,b,c,mu,sigma):
+    '''
+    Modela el continuo con la linea de absorcion como funcion lineal
+    menos una funcion lorentziana, siendo a y b los parametros de la funcion
+    lineal ax+b, y c, mu, sigma los parametros de la funcion gaussiana
+    con c siendo la amplitud.
+    '''
     continuo = a*x+b
     l = c * scipy.stats.cauchy(loc=mu, scale=sigma).pdf(x)
     return continuo-l
 
 
 def ajuste_datos(func, X, Y):
-    Opt, Var = curve_fit(perfil_ajuste_gauss, X, Y)
-    print "o", Opt
-    a, b = Opt[0], Opt[1]  #Primer ajuste
-    c = 10**(-17)  # Del grafico
+    '''
+    Entrega los parametros optimos dados los datos X, Y y la funcion
+    para hacer el ajuste
+    '''
+    Opt, Var = curve_fit(perfil_ajuste_gauss, X, Y)  #Primer ajuste
+
+    a, b = Opt[0], Opt[1]
+    c = 10**(-17)  # se obtiene del grafico
     aprox_mu = np.mean(X)
     aprox_sigma = np.std(X)
 
@@ -39,11 +55,17 @@ def ajuste_datos(func, X, Y):
 
 
 def chi_cuad(func,x , y, opt):
+    '''
+    Retorna Chi cuadrado del ajuste
+    '''
     chi_cuadrado = np.sum((y-func(x,opt[0],opt[1],opt[2],opt[3],opt[4]))**2)
     return chi_cuadrado
 
 
 def func_distribucion(modelo,datos):
+    '''
+    Funcion de distribucion para el ks test
+    '''
     return np.array([np.sum(modelo <= yy) for yy in datos]) / (len(modelo))
 
 
