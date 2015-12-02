@@ -8,7 +8,13 @@ from scipy.optimize import curve_fit
 from scipy.stats import (kstest, kstwobign)
 
 '''
-En este código se busca aproximar algo
+En este código se busca modelar el ensanchamiento de una linea de absorcion
+en un espectro de radiación.
+Para ello se utilizan dos modelos: uno gaussiano y uno lorentziano. Se minimiza
+chi2 con la funcion curve_fit, y con ello se obtienen los parametros optimos
+para cada funcion. Luego de ello se calcula el chi2 asociado a dichos
+parametros. Finalmente se hace un test de  Kolmogorov-Smirnov para ver si los
+datos estiman de buena forma los datos o no
 '''
 
 
