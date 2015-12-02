@@ -117,5 +117,7 @@ p_lorentz = aprox_2[0]
 y1 = modelo_gauss(p_gauss, x_exp)
 y2 = modelo_lorentz(p_lorentz, x_exp)
 plot(x_exp, y_exp, y1, y2)
+print p_gauss
+print p_lorentz
 print chi_cuadrado(p_gauss, x_exp, y_exp, modelo_gauss)
 print chi_cuadrado(p_lorentz, x_exp, y_exp, modelo_gauss)

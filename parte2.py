@@ -13,6 +13,7 @@ import scipy.stats
 from scipy.optimize import leastsq
 from scipy import optimize as opt
 from scipy.stats import kstest
+from scipy.stats import kstwobign
 
 # funciones estructurales
 
@@ -62,13 +63,19 @@ def cdf(datos, modelo):
 
 
 def prueba_ks(x_exp, y_exp, modelo, p_opt, titulo):
+    # D_n y confianza
     xmin = np.min(x_exp)
     xmax = np.max(x_exp)
     y_modelo_ord = np.sort(modelo(p_opt, np.linspace(xmin, xmax, 1000)))
     y_exp_ord = np.sort(y_exp)
     Dn, prob = kstest(y_exp_ord, cdf, args=(y_modelo_ord,))
-    CDF = cdf(y_exp_ord, y_modelo_ord)
+    # D_n critico
     N = len(y_exp_ord)
+    ks_dist = kstwobign()
+    alpha = 0.05
+    Dn_critico = ks_dist.ppf(1 - alpha) / np.sqrt(N)
+    # graficos
+    CDF = cdf(y_exp_ord, y_modelo_ord)
     ax, fig = plt.subplots()
     plt.plot(y_exp_ord, np.arange(N) / N, '-^', drawstyle='steps-post',
              label="Datos")
@@ -79,7 +86,7 @@ def prueba_ks(x_exp, y_exp, modelo, p_opt, titulo):
     plt.legend(loc=2)
     plt.savefig("{}".format(titulo))
     plt.show()
-    return Dn, prob
+    return Dn, prob, Dn_critico
 
 
 # main
