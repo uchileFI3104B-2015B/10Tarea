@@ -19,7 +19,7 @@ def recta(params, x):
 
 
 def gauss(params, x):
-    #Funcion de gauss
+    # Funcion de gauss
     A = params[0]
     mu = params[1]
     sigma = params[2]
@@ -41,7 +41,8 @@ def f_modelo_g(params, x):
     params_g = A, mu, sigma
     f_recta = recta(params_f, x)
     f_gauss = gauss(params_g, x)
-    return f_recta -  f_gauss
+    return f_recta - f_gauss
+
 
 def f_modelo_l(params, x):
     # Funcion modelo para Lorentz
@@ -50,7 +51,7 @@ def f_modelo_l(params, x):
     params_l = A, mu, sigma
     f_recta = recta(params_f, x)
     f_lorentz = lorentz(params_l, x)
-    return f_recta -  f_lorentz
+    return f_recta - f_lorentz
 
 
 def f_minimizar_g(x, a, b, A, mu, sigma):
@@ -69,8 +70,8 @@ def f_minimizar_l(x, a, b, A, mu, sigma):
 # Setup
 # Cargamos los datos
 datos = np.loadtxt("espectro.dat")
-wave_length = datos[:,0]
-f_nu = datos[:,1]
+wave_length = datos[:, 0]
+f_nu = datos[:, 1]
 
 # Creamos adivinanzas
 ad_a = 0
@@ -135,8 +136,8 @@ N = len(wave_length)
 max_1_g = np.max(CDF_model_g - np.arange(N) / N)
 max_1_l = np.max(CDF_model_l - np.arange(N) / N)
 
-max_2_g = np.max(np.arange(1,N+1)/N - CDF_model_g)
-max_2_l = np.max(np.arange(1,N+1)/N - CDF_model_l)
+max_2_g = np.max(np.arange(1, N+1)/N - CDF_model_g)
+max_2_l = np.max(np.arange(1, N+1)/N - CDF_model_l)
 
 # Obtenemos nuestra mayor distancia absoluta para Gauss y Lorentz
 Dn_g = max(max_1_g, max_2_g)
