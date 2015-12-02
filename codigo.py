@@ -99,16 +99,21 @@ A_l = params_l[2]
 mu_l = params_l[3]
 sigma_l = params_l[4]
 
+# Obtenemos chi cuadrado para Gauss y Lorentz
+chi_g = np.sum((f_nu - f_modelo_g(params_g, wave_length)) ** 2)
+chi_l = np.sum((f_nu - f_modelo_l(params_l, wave_length)) ** 2)
+
 # Mostramos los parámetros
 print "-------------------------------------------------------"
 print "Gauss:"
 print "Parametros a, b:", a_g, ", ", b_g
 print "Parametros A, mu, sigma:", A_g, ", ", mu_g, ", ", sigma_g
+print "Chi cuadrado: ", chi_g
 print "-------------------------------------------------------"
 print "Lorentz"
 print "Parametros a, b:", a_l, ", ", b_l
 print "Parametros A, mu, sigma:", A_l, ", ", mu_l, ", ", sigma_l
-
+print "Chi cuadrado: ", chi_l
 
 # P2
 # Renombramos los vectores de parametros
@@ -144,6 +149,7 @@ Dn_g = max(max_1_g, max_2_g)
 Dn_l = max(max_1_l, max_2_l)
 
 # Mostramos los Dn para Gauss y Lorentz
+print "-------------------------------------------------------"
 print "Dn para gauss: ", Dn_g
 print "Dn para lorentz: ", Dn_l
 
