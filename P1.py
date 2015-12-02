@@ -75,7 +75,7 @@ def generar_dist_acumulada(datos_x, datos_y, a, modelo):
     return y_modelo_distribuido, datos_y_distribuidos
     
     
-def graficar_KS(datos, modelo, titulo, n_archivo):
+def graficar_prob(datos, modelo, titulo, n_archivo):
     ax, fig = plt.subplots()    
     CDF_model = np.array([np.sum(modelo <= yy) for yy in datos]) / len(modelo)
     N = len(datos)
@@ -103,17 +103,19 @@ chi_l = chi_2([l_onda, f_nu], modelo_lorentz, param_opt_l) #Se sacan los chi_2
 chi_g = chi_2([l_onda, f_nu], modelo_gauss, param_opt_g)
 
 print('''Parametros optimos perfil de Lorentz: Amplitud= {},
-      promedio = {}, sigma = {}'''.format(param_opt_l[0],
+      mu = {}, sigma = {}'''.format(param_opt_l[0],
                                           param_opt_l[1], param_opt_l[2]))
 print('''Parametros optimos recta (Lorentz): Pendiente = {},
       coef de posicion = {}'''.format(param_opt_l[3],param_opt_l[4]))
 print("Chi cuadrado (Lorentz)= ", chi_l)
+print(" ")
 print('''Parametros optimos modelo Gaussiano: Amplitud= {},
-      promedio = {}, sigma = {}'''.format(param_opt_g[0],
+      mu = {}, sigma = {}'''.format(param_opt_g[0],
                                           param_opt_g[1], param_opt_g[2]))
 print('''Parametros optimos recta (Gauss): Pendiente = {},
       coef de posicion = {}'''.format(param_opt_g[3],param_opt_g[4]))
-print("Chi cuadrado (Gauss) = ", chi_g)      
+print("Chi cuadrado (Gauss) = ", chi_g)
+print(" ")      
 
 x_modelo_l, y_modelo_l = def_datos(param_opt_l, modelo_lorentz)
 x_modelo_g, y_modelo_g = def_datos(param_opt_g, modelo_gauss)
@@ -141,13 +143,13 @@ print "Nivel de confianza para perfil de lorentz : ", conf_l
 print "Dn_scipy para modelo gaussiano   : ", Dn_scipy_g
 print "Nivel de confianza para modelo gaussiano : ", conf_g
 
-graficar_KS(f_data_sorted, f_modelo_l_sorted, 
+graficar_prob(f_data_sorted, f_modelo_l_sorted, 
             "Probabilidad acumulada para perfil de Lorentz",
-            "KS_Lorentz")
+            "P_Lorentz")
 
-graficar_KS(f_data_sorted, f_modelo_g_sorted, 
+graficar_prob(f_data_sorted, f_modelo_g_sorted, 
             "Probabilidad acumulada para Gaussiana",
-            "KS_Gauss")
+            "P_Gauss")
             
 plt.show()
 
