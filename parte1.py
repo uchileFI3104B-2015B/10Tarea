@@ -10,6 +10,7 @@ import scipy.stats
 from scipy.optimize import curve_fit
 from scipy import optimize as opt
 
+
 def recta(params, x):
     a = params[0]
     b = params[1]
@@ -22,6 +23,7 @@ def gaussiana(params, x):
     sigma = params[2]
     y = A * scipy.stats.norm(loc=mu, scale=sigma).pdf(x)
     return y
+
 
 def lorentz(params, x):
     A = params[0]
@@ -41,7 +43,7 @@ def func_modelo_gauss(params, x):
     return modelo
 
 
-def func_modelo_lorentz(params,x):
+def func_modelo_lorentz(params, x):
     a, b, A, mu, sigma = params
     params_recta = a, b
     params_lorentz = A, mu, sigma
@@ -49,6 +51,7 @@ def func_modelo_lorentz(params,x):
     lor = lorentz(params_lorentz, x)
     modelo = rect - lor
     return modelo
+
 
 def func_a_minimizar_gauss(x, a, b, A, mu, sigma):
     params = a, b, A, mu, sigma
@@ -59,6 +62,7 @@ def func_a_minimizar_lorentz(x, a, b, A, mu, sigma):
     params = a, b, A, mu, sigma
     return func_modelo_lorentz(params, x)
 
+
 def chi_cuadrado(x_data, y_data, modelo, params):
     x_modelo = x_data
     y_modelo = modelo(params, x_modelo)
@@ -66,13 +70,12 @@ def chi_cuadrado(x_data, y_data, modelo, params):
     Chi_cuad = np.sum(chi_cuad)
     return Chi_cuad
 
-
 # Main
 
 # Leer el archivo, datos experimentales
 datos = np.loadtxt("espectro.dat")
-w_length = datos[:,0]
-fnu = datos[:,1]
+w_length = datos[:, 0]
+fnu = datos[:, 1]
 
 # Setup
 
@@ -90,8 +93,9 @@ print "Parametros (a,b,A,mu,sigma) Lorentz: ", resultado_lorentz[0]
 params_opt_lorentz = resultado_lorentz[0]
 
 # Chi cuadrado
-chi_gauss = chi_cuadrado(w_length, fnu, func_modelo_gauss, a0)
-chi_lorentz = chi_cuadrado(w_length, fnu, func_modelo_lorentz, a0)
+chi_gauss = chi_cuadrado(w_length, fnu, func_modelo_gauss, params_opt_gauss)
+chi_lorentz = chi_cuadrado(w_length, fnu, func_modelo_lorentz,
+                           params_opt_lorentz)
 print "Chi cuadrado (Gauss):", chi_gauss
 print "Chi cuadrado (Lorentz):", chi_lorentz
 

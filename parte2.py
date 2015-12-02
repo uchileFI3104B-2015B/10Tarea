@@ -27,6 +27,7 @@ def gaussiana(params, x):
     y = A * scipy.stats.norm(loc=mu, scale=sigma).pdf(x)
     return y
 
+
 def lorentz(params, x):
     A = params[0]
     mu = params[1]
@@ -45,7 +46,7 @@ def func_modelo_gauss(params, x):
     return modelo
 
 
-def func_modelo_lorentz(params,x):
+def func_modelo_lorentz(params, x):
     a, b, A, mu, sigma = params
     params_recta = a, b
     params_lorentz = A, mu, sigma
@@ -53,6 +54,7 @@ def func_modelo_lorentz(params,x):
     lor = lorentz(params_lorentz, x)
     modelo = rect - lor
     return modelo
+
 
 def func_a_minimizar_gauss(x, a, b, A, mu, sigma):
     params = a, b, A, mu, sigma
@@ -63,26 +65,26 @@ def func_a_minimizar_lorentz(x, a, b, A, mu, sigma):
     params = a, b, A, mu, sigma
     return func_modelo_lorentz(params, x)
 
+
 def cdf(data, model):
     return np.array([np.sum(model <= yy) for yy in data]) / len(model)
+
 
 def distribucion_acumulada(x, y, params_opt, func_modelo):
     xmin = np.min(w_length)
     xmax = np.max(w_length)
     y_data_sorted = np.sort(fnu)
-    y_model_sorted= np.sort(func_modelo(params_opt, np.linspace(xmin, xmax, 1000)))
+    funcion_modelo = func_modelo(params_opt, np.linspace(xmin, xmax, 1000))
+    y_model_sorted = np.sort(funcion_modelo)
     return y_model_sorted, y_data_sorted
 
-
 # Main
-
 # Leer el archivo, datos experimentales
 datos = np.loadtxt("espectro.dat")
-w_length = datos[:,0]
-fnu = datos[:,1]
+w_length = datos[:, 0]
+fnu = datos[:, 1]
 
 # Setup
-
 # Adivinanza parametros. Vector de la forma (a, b, A, mu, sigma)
 # Recta a * x + b = y ; Gauss A amplitud, mu centro, sigma varianza.
 a0 = 0, 1.39e-16, 0.1e-16, 6560, 10
@@ -98,12 +100,12 @@ params_opt_lorentz = resultado_lorentz[0]
 
 # Kolmogorov-Smirnov Test
 y_model_sorted_g, y_data_sorted = distribucion_acumulada(w_length, fnu,
-                                                          params_opt_gauss,
-                                                          func_modelo_gauss)
+                                                         params_opt_gauss,
+                                                         func_modelo_gauss)
 
 y_model_sorted_l, y_data_sorted = distribucion_acumulada(w_length, fnu,
-                                                          params_opt_lorentz,
-                                                          func_modelo_lorentz)
+                                                         params_opt_lorentz,
+                                                         func_modelo_lorentz)
 N = len(y_data_sorted)
 CDF_model_g = cdf(y_data_sorted, y_model_sorted_g)
 CDF_model_l = cdf(y_data_sorted, y_model_sorted_l)
@@ -113,7 +115,8 @@ fig, (ax1, ax2) = plt.subplots(nrows=1, ncols=2)
 
 ax1.plot(y_data_sorted, np.arange(N) / N, '-^',
          drawstyle='steps-post', label="Datos experimentales")
-ax1.plot(y_data_sorted, np.arange(1, N+1) / N, '-.', drawstyle='steps-post')
+ax1.plot(y_data_sorted, np.arange(1, N+1) / N, '-.',
+         drawstyle='steps-post')
 ax1.plot(y_data_sorted, CDF_model_g, '-x',
          drawstyle='steps-post', label="Modelo Gauss")
 ax1.set_title('Probabilidad acumulada')
@@ -123,7 +126,8 @@ ax1.legend(loc='upper left')
 
 ax2.plot(y_data_sorted, np.arange(N) / N, '-^',
          drawstyle='steps-post', label="Datos experimentales")
-ax2.plot(y_data_sorted, np.arange(1, N+1) / N, '-.', drawstyle='steps-post')
+ax2.plot(y_data_sorted, np.arange(1, N+1) / N, '-.',
+         drawstyle='steps-post')
 ax2.plot(y_data_sorted, CDF_model_l, 'g-x',
          drawstyle='steps-post', label="Modelo Lorentz")
 ax2.set_title('Probabilidad acumulada')
@@ -145,7 +149,8 @@ Dn_scipy_l, prob_scipy_l = kstest(y_data_sorted,
 print "Dn_scipy Lorentz : ", Dn_scipy_l
 print "Nivel de confianza (Lorentz) : ", prob_scipy_l
 
-ks_dist = kstwobign() # two-sided, aproximacion para big N
+# Dn critico
+ks_dist = kstwobign()
 alpha = 0.05
 Dn_critico = ks_dist.ppf(1 - alpha) / np.sqrt(N)
 print "Dn_critico = ", Dn_critico
