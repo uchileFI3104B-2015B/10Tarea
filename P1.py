@@ -73,6 +73,20 @@ def generar_dist_acumulada(datos_x, datos_y, a, modelo):
     y_modelo_distribuido = np.sort(modelo(np.linspace(x_min, x_max, 122), *a))
     datos_y_distribuidos = np.sort(datos_y)
     return y_modelo_distribuido, datos_y_distribuidos
+    
+    
+def graficar_KS(datos, modelo, titulo, n_archivo):
+    ax, fig = plt.subplots()    
+    CDF_model = np.array([np.sum(modelo <= yy) for yy in datos]) / len(modelo)
+    N = len(datos)
+    plt.plot(datos, np.arange(N) / N, '-^', drawstyle='steps-post', label="datos")
+    plt.plot(datos, np.arange(1, N+1) / N, '-.', drawstyle='steps-post')
+    plt.plot(datos, CDF_model, '-x', drawstyle='steps-post', label="modelo")
+    fig.set_title(titulo)
+    fig.set_xlabel( "Wavelength[Angstrom]")
+    fig.set_ylabel("Probabilidad")
+    plt.legend(loc=2)
+    plt.savefig("{}.jpg".format(n_archivo))
 
 #Main
     
@@ -126,6 +140,14 @@ print "Nivel de confianza para perfil de lorentz : ", conf_l
 
 print "Dn_scipy para modelo gaussiano   : ", Dn_scipy_g
 print "Nivel de confianza para modelo gaussiano : ", conf_g
+
+graficar_KS(f_data_sorted, f_modelo_l_sorted, 
+            "Probabilidad acumulada para perfil de Lorentz",
+            "KS_Lorentz")
+
+graficar_KS(f_data_sorted, f_modelo_g_sorted, 
+            "Probabilidad acumulada para Gaussiana",
+            "KS_Gauss")
             
 plt.show()
 
