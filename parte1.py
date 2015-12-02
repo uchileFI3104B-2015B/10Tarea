@@ -24,24 +24,24 @@ def leer_archivo(nombre):
     return datos
 
 
-def recta(p, x):
-    a, b = p
-    return a * x + b
+def modelo_gauss(p, x):
+    a, b, A, mu, sigma = p
+    y1 = a * x + b
+    y2 = y = A * scipy.stats.norm(loc=mu, scale=sigma).pdf(x)
+    return y1 - y2
 
 
-def gaussiana(p, x):
-    A, mu, sigma = p
-    y = A * scipy.stats.norm(loc=mu, scale=sigma).pdf(x)
-    return y
-
-
-def lorentz(p, x):
-    A, mu, sigma = p
-    y = A * scipy.stats.cauchy(loc=mu, scale=sigma).pdf(x)
-    return y
+def modelo_lorentz(p, x):
+    a, b, A, mu, sigma = p
+    y1 = a * x + b
+    y2 = A * scipy.stats.cauchy(loc=mu, scale=sigma).pdf(x)
+    return y1 - y2
 
 
 def plot(x, y, y1, y2):
+    '''
+    grafica los modelos comparandolos (por separado) con los datos exp
+    '''
     fig = plt.figure()
     fig.clf()
     ax1 = fig.add_subplot(111)
@@ -65,25 +65,10 @@ def plot(x, y, y1, y2):
     plt.show()
 
 
-def modelo_gauss(p, x):
-    a, b, A, mu, sigma = p
-    p1 = a, b
-    p2 = A, mu, sigma
-    y1 = recta(p1, x)
-    y2 = gaussiana(p2, x)
-    return y1 - y2
-
-
-def modelo_lorentz(p, x):
-    a, b, A, mu, sigma = p
-    p1 = a, b
-    p2 = A, mu, sigma
-    y1 = recta(p1, x)
-    y2 = lorentz(p2, x)
-    return y1 - y2
-
-
 def experimental():
+    '''
+    no es muy necesaria, pero se deja para tener mas orden
+    '''
     ex = leer_archivo("espectro.dat")
     x_ex = ex[:, 0]
     y_ex = ex[:, 1]
@@ -105,9 +90,7 @@ def chi_cuadrado(p, x, y, f):
     return S
 
 # inicializacion
-p1 = 1e-16, 0
-p2 = 1e-16, 6550, 1
-p0 = p1[0], p1[1], p2[0], p2[1], p2[2]
+p0 = 1e-16, 0, 1e-16, 6550, 1
 x_exp, y_exp = experimental()
 aprox_1 = leastsq(residuo_gauss, p0, args=(x_exp, y_exp))
 aprox_2 = leastsq(residuo_lorentz, p0, args=(x_exp, y_exp))

@@ -63,6 +63,10 @@ def cdf(datos, modelo):
 
 
 def prueba_ks(x_exp, y_exp, modelo, p_opt, titulo):
+    '''
+    realiza la prueba completa de kolmogorov-smirnov y grafica las funciones
+    de probabilidad acumulada y muestra el d_n critico
+    '''
     # D_n y confianza
     xmin = np.min(x_exp)
     xmax = np.max(x_exp)
