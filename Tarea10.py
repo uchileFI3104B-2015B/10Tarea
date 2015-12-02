@@ -82,7 +82,7 @@ poptg = obtener_parametros(ajuste_gauss, wavelength,
                            fnu, parametros=parametros)
 # resultados
 print '----------------------------------------------'
-print 'f(x) = (a + b * x) - A * exp((x - mu) / sigma)'
+print 'f(x) = (a + b * x) - A * 1 / sqrt(2pi sigma^2) * exp((x - mu) / sigma)'
 print 'a = ', poptg[0]
 print 'b = ', poptg[1]
 print 'A = ', poptg[2]
@@ -130,13 +130,15 @@ plt.show()
 # gauss vs lorentz
 ###################
 
-plt.plot(wavelength, ajuste_gauss(wavelength, *poptg), 'r--')
-plt.plot(wavelength, ajuste_lorentz(wavelength, *poptl), 'g--')
-plt.plot(wavelength, fnu, 'y^')
+plt.plot(wavelength, ajuste_gauss(wavelength, *poptg), 'r--', label='Gauss')
+plt.plot(wavelength, ajuste_lorentz(wavelength, *poptl),
+         'g--', label='Lorentz')
+plt.plot(wavelength, fnu, 'y^', label='Datos')
 plt.axis([6450, 6675, 1.28e-16, 1.42e-16])
 plt.title('Perfil Gaussiano vs Perfil Lorentziano')
-plt.xlabel('$\AA$')
-plt.ylabel('$erg\ \  s^{-1}\ Hz^{-1}\ cm^{-2}$')
+plt.xlabel('longitud de onda [$\AA$]')
+plt.ylabel('$F_{nu} $[$erg\ \  s^{-1}\ Hz^{-1}\ cm^{-2}$]')
+plt.legend(loc='lower right')
 plt.show()
 
 ##############################################################################
@@ -163,13 +165,13 @@ fnu_datos_gauss = np.sort(fnu)  # ordena los valores fnu
 cdf_gauss = np.array([np.sum(fnu_modelo_gauss <= yy)
                      for yy in fnu_datos_gauss]) / len(fnu_modelo_gauss)
 
-plt.plot(fnu_datos_gauss, np.arange(n) / n, '-^', drawstyle='steps-post')
-plt.plot(fnu_datos_gauss, np.arange(1, n + 1) / n, '-.',
+plt.plot(fnu_datos_gauss, np.arange(n) / n, 'b', drawstyle='steps-post')
+plt.plot(fnu_datos_gauss, np.arange(1, n + 1) / n, 'g',
          drawstyle='steps-post')
-plt.plot(fnu_datos_gauss, cdf_gauss, '-x', drawstyle='steps-post')
+plt.plot(fnu_datos_gauss, cdf_gauss, 'r-^', drawstyle='steps-post')
 plt.title('CDF Gauss')
-plt.xlabel('')
-plt.ylabel('')
+plt.xlabel('$F_{nu} $[$erg\ \  s^{-1}\ Hz^{-1}\ cm^{-2}$]')
+plt.ylabel('Probabilidad')
 plt.show()
 
 # obtiene valores maximos de la distancia entre cdf de los datos y el modelo
@@ -211,13 +213,13 @@ fnu_datos_lorentz = np.sort(fnu)  # ordena los valores fnu
 cdf_lorentz = np.array([np.sum(fnu_modelo_lorentz <= yy)
                        for yy in fnu_datos_lorentz]) / len(fnu_modelo_lorentz)
 
-plt.plot(fnu_datos_lorentz, np.arange(n) / n, '-^', drawstyle='steps-post')
-plt.plot(fnu_datos_lorentz, np.arange(1, n + 1) / n, '-.',
+plt.plot(fnu_datos_lorentz, np.arange(n) / n, 'b', drawstyle='steps-post')
+plt.plot(fnu_datos_lorentz, np.arange(1, n + 1) / n, 'g',
          drawstyle='steps-post')
-plt.plot(fnu_datos_lorentz, cdf_lorentz, '-x', drawstyle='steps-post')
+plt.plot(fnu_datos_lorentz, cdf_lorentz, 'r-^', drawstyle='steps-post')
 plt.title('CDF Lorentz')
-plt.xlabel('')
-plt.ylabel('')
+plt.xlabel('$F_{nu} $[$erg\ \  s^{-1}\ Hz^{-1}\ cm^{-2}$]')
+plt.ylabel('Probabilidad')
 plt.show()
 
 # obtiene valores maximos de la distancia entre cdf de los datos y el modelo
