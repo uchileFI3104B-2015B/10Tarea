@@ -163,8 +163,8 @@ print ""
 print "Modelo Gaussiano:"
 print "chi2 =", chig, "[erg^2 s^-2 Hz^-2 cm^-4]"
 print "A =", AG_opt[2], "[erg s^-1 Hz^-1 cm^-2 Angstrom]"
-print "mu =", AG_opt[3], "Angstrom"
-print "sigma =", AG_opt[4], "Angstrom"
+print "mu =", AG_opt[3],
+print "sigma =", AG_opt[4],
 print "a =", AG_opt[0], "[erg s^-1 Hz^-1 cm^-2 Angstrom^-1]"
 print "b =", AG_opt[1], "[erg s^-1 Hz^-1 cm^-2]"
 
@@ -172,7 +172,7 @@ print ""
 print "Modelo Lorentziano:"
 print "chi2 =", chil, "[erg^2 s^-1 Hz^-2 cm^-4]"
 print "A =", AL_opt[2], "[erg s^-1 Hz^-1 cm^-2 Angstrom]"
-print "mu =", AL_opt[3], "Angstrom"
-print "sigma =", AL_opt[4], "Angstrom"
+print "mu =", AL_opt[3],
+print "sigma =", AL_opt[4], 
 print "a =", AL_opt[0], "[erg s^-1 Hz^-1 cm^-2 Angstrom^-1]"
 print "b =", AL_opt[1], "[erg s^-1 Hz^-1 cm^-2]"
