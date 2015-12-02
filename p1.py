@@ -46,7 +46,7 @@ popt2, pcov2 = curve_fit(recta_lorentz, wavelength, fnu,
                          [m, n, 1e-17, mean, sigma])
 fig = plt.figure(1)
 plt.clf()
-plt.plot(wavelength, fnu, 'o', label='Datos', alpha=0.4, color='g')
+plt.plot(wavelength, fnu, 'o-', label='Datos', alpha=0.4, color='g')
 plt.plot(wavelength, recta_gaussiana(wavelength, *popt1), color='b',
          label='Ajuste recta-gaussiana', linewidth=1.5,)
 plt.plot(wavelength, recta_lorentz(wavelength, *popt2), color='r',

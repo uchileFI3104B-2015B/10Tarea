@@ -75,13 +75,13 @@ fig = plt.figure(1)
 plt.clf()
 ax = fig.add_subplot(111)
 ax.plot(y_data_sorted, np.arange(N) / N, '-^', drawstyle='steps-post',
-         color='b')
+        color='b', label='$F_{n2}$')
 ax.plot(y_data_sorted, np.arange(1, N+1) / N, '-.', drawstyle='steps-post',
-         color='b')
+        color='b', label='$F_{n1}$')
 ax.plot(y_data_sorted, CDF_gauss, '-x', drawstyle='steps-post',
-         label='Ajuste recta-gaussiana', color='g')
+        label='Ajuste recta-gaussiana', color='g')
 ax.plot(y_data_sorted, CDF_lorentz, '-x', drawstyle='steps-post',
-         label='Ajuste recta-lorentz', color='r')
+        label='Ajuste recta-lorentz', color='r')
 plt.legend(loc=2)
 plt.title('Funciones de probabilidad acumulada')
 ax.set_xlabel('Frecuencia [$erg$ $s^{-1} Hz^{-1} cm^{-2}$]')
@@ -89,19 +89,19 @@ ax.set_xlabel('Frecuencia [$erg$ $s^{-1} Hz^{-1} cm^{-2}$]')
 # zoom en el plot
 axins = zoomed_inset_axes(ax, 6, loc=6)
 axins.plot(y_data_sorted, np.arange(N) / N, '-^', drawstyle='steps-post',
-         color='b')
+           color='b')
 axins.plot(y_data_sorted, np.arange(1, N+1) / N, '-.', drawstyle='steps-post',
-         color='b')
+           color='b')
 axins.plot(y_data_sorted, CDF_gauss, '-x', drawstyle='steps-post',
-         label='Ajuste recta-gaussiana', color='g')
+           label='Ajuste recta-gaussiana', color='g')
 axins.plot(y_data_sorted, CDF_lorentz, '-x', drawstyle='steps-post',
-         label='Ajuste recta-lorentz', color='r')
+           label='Ajuste recta-lorentz', color='r')
 
 plt.yticks(visible=False)
 plt.xticks(visible=False)
-x1, x2, y1, y2 = 1.375*10**-16, 1.39*10**-16, 0.05, 0.09 # specify the limits
-axins.set_xlim(x1, x2) # apply the x-limits
-axins.set_ylim(y1, y2) # apply the y-limits
+x1, x2, y1, y2 = 1.375 * 10**-16, 1.39 * 10**-16, 0.05, 0.09  # limites
+axins.set_xlim(x1, x2)
+axins.set_ylim(y1, y2)
 mark_inset(ax, axins, loc1=1, loc2=4, fc="none", ec="0.5")
 
 plt.draw()
@@ -110,7 +110,7 @@ plt.savefig('figura2.png')
 
 
 # Dn critico
-ks_dist = kstwobign() # aproximacion para N grande
+ks_dist = kstwobign()  # aproximacion para N grande
 alpha = 0.05
 Dn_critico = ks_dist.ppf(1 - alpha) / np.sqrt(N)
 print "Dn_critico = ", Dn_critico
