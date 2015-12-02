@@ -14,7 +14,7 @@ from scipy.optimize import curve_fit
 import scipy.stats
 
 
-def perfil_ajuste_gauss(x,a,b,c,mu,sigma):
+def perfil_ajuste_gauss(x, a, b, c, mu, sigma):
     '''
     Modela el continuo con la linea de absorcion como funcion lineal
     menos una funcion gaussiana, siendo a y b los parametros de la funcion
@@ -62,7 +62,7 @@ def chi_cuad(func,x , y, opt):
     return chi_cuadrado
 
 
-def func_distribucion(modelo,datos):
+def func_distribucion(datos, modelo):
     '''
     Funcion de distribucion para el ks test
     '''
@@ -97,6 +97,7 @@ plt.step(L_onda, Fv, 'r')
 plt.plot(L_onda, Fv_ajuste, "b")
 plt.xlabel(r'Longitud de onda [$\AA$]')
 plt.ylabel(r'$F_\nu \, [ergs \, s^{-1}\, Hz^{-1}\, cm^{-2}]$')
+plt.savefig("Gauss")
 plt.show()
 
 # Obtener ajuste de parametros optimos, lorentz
@@ -120,6 +121,7 @@ plt.step(L_onda, Fv, 'r')
 plt.plot(L_onda, Fv_ajuste2, "g")
 plt.xlabel(r'Longitud de onda [$\AA$]')
 plt.ylabel(r'$F_\nu \, [ergs \, s^{-1}\, Hz^{-1}\, cm^{-2}]$')
+plt.savefig("Lorentz")
 plt.show()
 
 plt.figure(3)
@@ -129,6 +131,7 @@ plt.plot(L_onda, Fv_ajuste, "b", label="Gaussiano")
 plt.plot(L_onda, Fv_ajuste2, "g", label="Lorentziano")
 plt.xlabel(r'Longitud de onda [$\AA$]')
 plt.ylabel(r'$F_\nu \, [ergs \, s^{-1}\, Hz^{-1}\, cm^{-2}]$')
+plt.savefig("G_vs_L")
 plt.show()
 
 
@@ -139,16 +142,17 @@ L_onda_max = np.max(L_onda)
 L_onda_min = np.min(L_onda)
 Fv_ordenado = np.sort(Fv)
 muestra = np.linspace(L_onda_min,
-                    L_onda_max, np.shape(L_onda)[0])
+                    L_onda_max, 1000000)
+
+
 Fv_modelo_ordenado = np.sort(perfil_ajuste_gauss(muestra, Optimos[0],Optimos[1],Optimos[2],
                     Optimos[3],Optimos[4]))
 
 D, p_value = scipy.stats.kstest(Fv_ordenado, func_distribucion, args=(Fv_modelo_ordenado,))
-
 print "D gauss, p-value Gauss", D, p_value
 
 
-# Modelo gaussiano
+# Modelo Lorentziano
 
 Fv_modelo_ordenado = np.sort(perfil_ajuste_lorentz(muestra, Optimos2[0],Optimos2[1],Optimos2[2],
                     Optimos2[3],Optimos2[4]))
