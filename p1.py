@@ -147,7 +147,7 @@ def dn(x_data, y_data, ag, al):
 # descarga datos
 longitud, flujo = datos()
 # condiciones iniciales
-A0 = 1e-20, 1 * 1e-16, 1 * 1e-16, 6570, 1
+A0 = 1.02e-20, 7.31e-17, 1 * 1e-16, 6570, 1
 # constantes optimas
 AG_opt, AL_opt = mejor_fit(longitud, flujo, A0)
 # plots
@@ -161,18 +161,18 @@ dn(longitud, flujo, AG_opt, AL_opt)
 # Parametros:
 print ""
 print "Modelo Gaussiano:"
-print "chi2 =", chig, "10^-32 [erg^2 s^-2 Hz^-2 cm^-4]"
-print "A =", AG_opt[2], "10^-16 [erg s^-1 Hz^-1 cm^-2 Angstrom]"
+print "chi2 =", chig, "[erg^2 s^-2 Hz^-2 cm^-4]"
+print "A =", AG_opt[2], "[erg s^-1 Hz^-1 cm^-2 Angstrom]"
 print "mu =", AG_opt[3], "Angstrom"
 print "sigma =", AG_opt[4], "Angstrom"
-print "a =", AG_opt[0], "10^-16 [erg s^-1 Hz^-1 cm^-2 Angstrom^-1]"
-print "b =", AG_opt[1], "10^-16 [erg s^-1 Hz^-1 cm^-2]"
+print "a =", AG_opt[0], "[erg s^-1 Hz^-1 cm^-2 Angstrom^-1]"
+print "b =", AG_opt[1], "[erg s^-1 Hz^-1 cm^-2]"
 
 print ""
 print "Modelo Lorentziano:"
-print "chi2 =", chil, "10^-32 [erg^2 s^-1 Hz^-2 cm^-4]"
-print "A =", AL_opt[2], "10^-16 [erg s^-1 Hz^-1 cm^-2 Angstrom]"
+print "chi2 =", chil, "[erg^2 s^-1 Hz^-2 cm^-4]"
+print "A =", AL_opt[2], "[erg s^-1 Hz^-1 cm^-2 Angstrom]"
 print "mu =", AL_opt[3], "Angstrom"
 print "sigma =", AL_opt[4], "Angstrom"
-print "a =", AL_opt[0], "10^-16 [erg s^-1 Hz^-1 cm^-2 Angstrom^-1]"
-print "b =", AL_opt[1], "10^-16 [erg s^-1 Hz^-1 cm^-2]"
+print "a =", AL_opt[0], "[erg s^-1 Hz^-1 cm^-2 Angstrom^-1]"
+print "b =", AL_opt[1], "[erg s^-1 Hz^-1 cm^-2]"
