@@ -118,7 +118,7 @@ plt.plot(x, modelo_1(x, m1, n1, A1, mu1, sigma1), color='blue',
 plt.plot(x, modelo_2(x, m2, n2, A2, mu2, sigma2), color='fuchsia',
          label='Modelo 2 (Lorentz)')
 plt.xlabel('Wavelength [$\AA$]', fontsize=16)
-plt.ylabel('$F_v$[ergs$^{-1}$Hz$^{-1}$cm$^{-2}$]', fontsize=16)
+plt.ylabel('$F_v$[erg s$^{-1}$Hz$^{-1}$cm$^{-2}$]', fontsize=16)
 plt.legend(loc='lower right')
 plt.savefig('Fits_espectro.eps')
 
@@ -128,7 +128,7 @@ plt.plot(wavelength, Fnu, color='darkcyan', drawstyle='steps-post',
 plt.plot(x, pendiente*x + coef_posic, label='Ajuste lineal',
          linewidth=2.0, color='brown')
 plt.xlabel('Wavelength [$\AA$]', fontsize=16)
-plt.ylabel('$F_v$[ergs$^{-1}$Hz$^{-1}$cm$^{-2}$]', fontsize=16)
+plt.ylabel('$F_v$[erg s$^{-1}$Hz$^{-1}$cm$^{-2}$]', fontsize=16)
 plt.legend(loc='lower right')
 plt.savefig('polyfit.eps')
 plt.show()
