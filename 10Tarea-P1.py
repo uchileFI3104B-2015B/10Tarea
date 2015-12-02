@@ -51,7 +51,7 @@ def func_distribucion(modelo,datos):
 
 Data = np.loadtxt("espectro.dat")
 Fv = Data[:,1]  #Flujo por unidad de frecuencia
-L_onda = Data[:,0]  # Longitud de onda
+L_onda = Data[:,0] # Longitud de onda
 
 
 # Obtener ajuste de parametros optimos, gaussiana
@@ -108,3 +108,29 @@ plt.plot(L_onda, Fv_ajuste2, "g", label="Lorentziano")
 plt.xlabel(r'Longitud de onda [$\AA$]')
 plt.ylabel(r'$F_\nu \, [ergs \, s^{-1}\, Hz^{-1}\, cm^{-2}]$')
 plt.show()
+
+
+# Pregunta 2
+
+# Modelo gaussiano
+L_onda_max = np.max(L_onda)
+L_onda_min = np.min(L_onda)
+Fv_ordenado = np.sort(Fv)
+muestra = np.linspace(L_onda_min,
+                    L_onda_max, np.shape(L_onda)[0])
+Fv_modelo_ordenado = np.sort(perfil_ajuste_gauss(muestra, Optimos[0],Optimos[1],Optimos[2],
+                    Optimos[3],Optimos[4]))
+
+D, p_value = scipy.stats.kstest(Fv_ordenado, func_distribucion, args=(Fv_modelo_ordenado,))
+
+print "D gauss, p-value Gauss", D, p_value
+
+
+# Modelo gaussiano
+
+Fv_modelo_ordenado = np.sort(perfil_ajuste_lorentz(muestra, Optimos2[0],Optimos2[1],Optimos2[2],
+                    Optimos2[3],Optimos2[4]))
+
+D, p_value = scipy.stats.kstest(Fv_ordenado, func_distribucion, args=(Fv_modelo_ordenado,))
+
+print "D Lorentz, p-value Lorentz", D, p_value
