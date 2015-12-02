@@ -88,7 +88,7 @@ def test_ks(wave, flux, p_optg, p_optl):
     y_expl_ord = np.sort(flux)
     dnl, probl = kstest(y_expl_ord, cdf, args=(y_lorentz_ord,))
 
-    return dng, probg, dnl, probl
+    return probg, probl
 
 
 # Setup
@@ -99,6 +99,7 @@ n = len(wave)
 seeds = 9.e-17, 8.e-21, 1.e-17, 6550., 10.
 
 # Main
+# - - - P1 - - - #
 poptg = fit(rectagauss, wave, flux, seeds)  # Gaussiana
 poptl = fit(rectalorentz, wave, flux, seeds)  # Lorentziana
 
@@ -109,18 +110,19 @@ print 'Modelo Lorentz:'
 print 'a =', poptl[0], 'b =', poptl[1], 'A =', poptl[2], 'mu =', poptl[3],\
     'sigma =', poptl[4], 'chi**2 = ', chi(rectalorentz, wave, flux, poptl)
 
+# - - - P2 - - - #
 optimog = leastsq(errorgauss, seeds, args=(wave, flux))[0]
 optimol = leastsq(errorlorentz, seeds, args=(wave, flux))[0]
 ks = test_ks(wave, flux, optimog, optimol)
 
-print 'Test KS Gauss:', ks[:2]
-print 'Test KS Lorentz:', ks[2:]
+print 'Test KS Gauss:', ks[0]
+print 'Test KS Lorentz:', ks[1]
 
-# Graficos
+# Grafico P1
 fig = plt.figure()
 ax1 = fig.add_subplot(111)
 
-ax1.plot(wave, flux, 'y*-', label="Datos Experimentales")
+ax1.plot(wave, flux, 'y*-', alpha=0.5, label="Datos Experimentales")
 ax1.plot(wave, rectalorentz(wave, *poptl), 'r-', linewidth='1.5',
          label="Ajuste Lorentz")
 ax1.plot(wave, rectagauss(wave, *poptg), 'g-', linewidth='1.5',
