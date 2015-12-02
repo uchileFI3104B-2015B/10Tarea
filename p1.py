@@ -52,3 +52,7 @@ plt.legend(loc=0)
 plt.draw()
 plt.show()
 plt.savefig('p1lorentz.png')
+
+# RESULTADOS
+print popt1 # m, n, A, mu, sigma
+print popt2
