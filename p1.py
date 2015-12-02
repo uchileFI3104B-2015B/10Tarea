@@ -19,6 +19,14 @@ def lorentz(x, m, n, A, mu, sigma):
     l = m * x + n - A * scipy.stats.cauchy(loc=mu, scale=sigma).pdf(x)
     return l
 
+
+def chi2(d, m, params):
+    x = d[0]
+    y = m(x, params[0], params[1], params[2], params[3], params[4])
+    chi_2 = (d[1] - y)**2
+    return np.sum(chi_2)
+
+
 # DATOS
 datos = np.loadtxt('espectro.dat')
 l = datos[:, 0]  # longitud de onda (A)
@@ -30,6 +38,10 @@ sigma = np.sqrt(sum((l - mu)**2) / n)
 # POPT = VALOR OPTIMO DE LOS PARÁMETROS, PCOV = COVARIANZA DE POPT
 popt1, pcov1 = curve_fit(gauss, l, f, [1e-16, 1e-18, 1e-16, mu, sigma])
 popt2, pcov2 = curve_fit(lorentz, l, f, [1e-16, 1e-18, 1e-16, mu, sigma])
+
+# CHI CUADRADO
+chi2_1 = chi2([l, f], gauss, popt1)
+chi2_2 = chi2([l, f], lorentz, popt2)
 
 # GRÁFICOS
 fig = plt.figure(1)
@@ -54,5 +66,7 @@ plt.show()
 plt.savefig('p1lorentz.png')
 
 # RESULTADOS
-print popt1 # m, n, A, mu, sigma
+print popt1  # m, n, A, mu, sigma
 print popt2
+print chi2_1
+print chi2_2
