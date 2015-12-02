@@ -63,6 +63,12 @@ print "Pendiente = {}, coef. de posicion = {}, Amplitud = {}, Centro = {} y Vari
 
 print "---------------------------------------------------------------------------------------------"
 
+
+print "chi^2 para el ajuste Lorentziano", chi_lorentz
+print "chi^2 para el ajuste Gaussiano", chi_gauss
+
+print "---------------------------------------------------------------------------------------------"
+
 #El plot
 fig = plt.figure()
 plt.axis([6450, 6675, 1.28e-16, 1.42e-16])
@@ -95,7 +101,7 @@ fig = plt.figure()
 plt.plot(y_data_sorted, np.arange(N) / N, '-^', drawstyle='steps-post', label="CDF inferior obs")
 plt.plot(y_data_sorted, np.arange(1, N+1) / N, '-.', drawstyle='steps-post', label="CDF superior obs")
 plt.plot(y_data_sorted, CDF_model_l, '-x', drawstyle='steps-post', label="CDF modelo Lorentziano")
-plt.ylabel("$F_\\nu [erg s^{-1} Hz^{-1} cm^{-2}]$")
+plt.xlabel("$F_\\nu [erg s^{-1} Hz^{-1} cm^{-2}]$")
 plt.legend(loc=2)
 plt.show()
 
@@ -103,7 +109,7 @@ fig = plt.figure()
 plt.plot(y_data_sorted, np.arange(N) / N, '-^', drawstyle='steps-post', label="CDF inferior obs")
 plt.plot(y_data_sorted, np.arange(1, N+1) / N, '-.', drawstyle='steps-post', label="CDF superior obs")
 plt.plot(y_data_sorted, CDF_model_g, '-o', drawstyle='steps-post', label="CDF modelo Gaussiano")
-plt.ylabel("$F_\\nu [erg s^{-1} Hz^{-1} cm^{-2}]$")
+plt.xlabel("$F_\\nu [erg s^{-1} Hz^{-1} cm^{-2}]$")
 plt.legend(loc=2)
 plt.show()
 
