@@ -5,6 +5,7 @@ import numpy as np
 from scipy.optimize import (leastsq, curve_fit)
 import matplotlib.pyplot as plt
 
+
 """
 Este programa extrae los datos de espectro.dat, modela el espectro
 segun una perfil de Lorentz y Gauss, y ve cual es el mejor modelo
@@ -36,7 +37,7 @@ def chi_2(datos, modelo, param):
     y_m = modelo(x_m, param[0], param[1], param[2], param[3], param[4])
     return np.sum((datos[1] - y_m) ** 2)
     
-def prob_acumulada(datos, modelo):
+def cdf(datos, modelo):
     '''
     Esto es para hacer K-S usando scipy.
     '''
@@ -62,6 +63,16 @@ def graficar_datos(l, f, datosl, datosg, xlabel, ylabel, title, ylim):
     fig.set_ylim(ylim)
     plt.legend(loc=4)
     plt.savefig("GraficoP1.jpg")
+    
+def generar_dist_acumulada(datos_x, datos_y, a, modelo):
+    '''
+    Genera la distribucion para el uso de K-S
+    '''
+    x_min = np.min(datos_x)
+    x_max = np.max(datos_x)
+    y_modelo_distribuido = np.sort(modelo(np.linspace(x_min, x_max, 122), *a))
+    datos_y_distribuidos = np.sort(datos_y)
+    return y_modelo_distribuido, datos_y_distribuidos
 
 #Main
     
@@ -70,9 +81,9 @@ l_onda = d1[:,0]
 f_nu = d1[:,1]
 
 param_opt_l, pcov = curve_fit(modelo_lorentz, l_onda, f_nu,
-                            p0=[0.1e-16,6560,5,0.03e-16/200,1])
+                            p0=[0.1e-16,6560,5,0.04e-16/200,1])
 param_opt_g, pcov = curve_fit(modelo_gauss, l_onda, f_nu,
-                            p0=[0.1e-16,6560,5,0.03e-16/200,1])
+                            p0=[0.1e-16,6560,5,0.04e-16/200,1])
                             
 chi_l = chi_2([l_onda, f_nu], modelo_lorentz, param_opt_l) #Se sacan los chi_2
 chi_g = chi_2([l_onda, f_nu], modelo_gauss, param_opt_g)
@@ -97,6 +108,24 @@ graficar_datos(l_onda, f_nu, [x_modelo_l, y_modelo_l], [x_modelo_g, y_modelo_g],
                "Longitud Onda [Angstrom]",
                "$F_\\nu [erg s^{-1} Hz^{-1} cm^{-2}]$",
                "Modelos Perfil Lorentz y Gauss", [1.28e-16, 1.42e-16])
-               
+
+# K-S
+
+f_modelo_l_sorted, f_data_sorted = generar_dist_acumulada(l_onda, f_nu,
+                                                          param_opt_l,
+                                                          modelo_lorentz)
+f_modelo_g_sorted, f_data_sorted = generar_dist_acumulada(l_onda, f_nu,
+                                                          param_opt_g,
+                                                           modelo_gauss)
+                                                          
+Dn_scipy_l, conf_l = stats.kstest(f_data_sorted, cdf, args=(f_modelo_l_sorted,))
+Dn_scipy_g, conf_g = stats.kstest(f_data_sorted, cdf, args=(f_modelo_g_sorted,))
+            
+print "Dn_scipy para perfil de lorentz   : ", Dn_scipy_l
+print "Nivel de confianza para perfil de lorentz : ", conf_l
+
+print "Dn_scipy para modelo gaussiano   : ", Dn_scipy_g
+print "Nivel de confianza para modelo gaussiano : ", conf_g
+            
 plt.show()
 
