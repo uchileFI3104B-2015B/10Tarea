@@ -71,8 +71,10 @@ Fv_ajuste = perfil_ajuste_gauss(L_onda, Optimos[0],Optimos[1],Optimos[2],Optimos
 
 plt.figure(1)
 plt.clf()
-plt.plot(L_onda, Fv, 'r')
+plt.step(L_onda, Fv, 'r')
 plt.plot(L_onda, Fv_ajuste, "b")
+plt.xlabel(r'Longitud de onda [$\AA$]')
+plt.ylabel(r'$F_\nu \, [ergs \, s^{-1}\, Hz^{-1}\, cm^{-2}]$')
 plt.show()
 
 # Obtener ajuste de parametros optimos, lorentz
@@ -92,6 +94,17 @@ Fv_ajuste2 = perfil_ajuste_lorentz(L_onda, Optimos2[0],Optimos2[1],Optimos2[2],O
 
 plt.figure(2)
 plt.clf()
-plt.plot(L_onda, Fv, 'r')
+plt.step(L_onda, Fv, 'r')
 plt.plot(L_onda, Fv_ajuste2, "g")
+plt.xlabel(r'Longitud de onda [$\AA$]')
+plt.ylabel(r'$F_\nu \, [ergs \, s^{-1}\, Hz^{-1}\, cm^{-2}]$')
+plt.show()
+
+plt.figure(3)
+plt.clf()
+plt.step(L_onda, Fv, 'r')
+plt.plot(L_onda, Fv_ajuste, "b", label="Gaussiano")
+plt.plot(L_onda, Fv_ajuste2, "g", label="Lorentziano")
+plt.xlabel(r'Longitud de onda [$\AA$]')
+plt.ylabel(r'$F_\nu \, [ergs \, s^{-1}\, Hz^{-1}\, cm^{-2}]$')
 plt.show()
