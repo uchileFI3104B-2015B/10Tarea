@@ -130,10 +130,10 @@ plt.show()
 # gauss vs lorentz
 ###################
 
-plt.plot(wavelength, ajuste_gauss(wavelength, *poptg), 'r--', label='Gauss')
+plt.plot(wavelength, ajuste_gauss(wavelength, *poptg), 'b-', label='Gauss')
 plt.plot(wavelength, ajuste_lorentz(wavelength, *poptl),
-         'g--', label='Lorentz')
-plt.plot(wavelength, fnu, 'y^', label='Datos')
+         'g-', label='Lorentz')
+plt.plot(wavelength, fnu, 'r^', label='Datos')
 plt.axis([6450, 6675, 1.28e-16, 1.42e-16])
 plt.title('Perfil Gaussiano vs Perfil Lorentziano')
 plt.xlabel('longitud de onda [$\AA$]')
