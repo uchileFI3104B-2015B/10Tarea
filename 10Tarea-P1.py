@@ -1,4 +1,3 @@
-
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
@@ -26,7 +25,7 @@ def perfil_ajuste_gauss(x, a, b, c, mu, sigma):
     return continuo-g
 
 
-def perfil_ajuste_lorentz(x,a,b,c,mu,sigma):
+def perfil_ajuste_lorentz(x, a, b, c, mu, sigma):
     '''
     Modela el continuo con la linea de absorcion como funcion lineal
     menos una funcion lorentziana, siendo a y b los parametros de la funcion
@@ -43,22 +42,23 @@ def ajuste_datos(func, X, Y):
     Entrega los parametros optimos dados los datos X, Y y la funcion
     para hacer el ajuste
     '''
-    Opt, Var = curve_fit(perfil_ajuste_gauss, X, Y)  #Primer ajuste
+    Opt, Var = curve_fit(perfil_ajuste_gauss, X, Y)  # Primer ajuste
 
     a, b = Opt[0], Opt[1]
     c = 10**(-17)  # se obtiene del grafico
     aprox_mu = np.mean(X)
     aprox_sigma = np.std(X)
 
-    Opt, Var = curve_fit(func, X, Y,p0=[a,b,c,aprox_mu,aprox_sigma])
+    Opt, Var = curve_fit(func, X, Y, p0=[a, b, c, aprox_mu, aprox_sigma])
     return Opt
 
 
-def chi_cuad(func,x , y, opt):
+def chi_cuad(func, x, y, opt):
     '''
     Retorna Chi cuadrado del ajuste
     '''
-    chi_cuadrado = np.sum((y-func(x,opt[0],opt[1],opt[2],opt[3],opt[4]))**2)
+    chi_cuadrado = np.sum((y-func(x, opt[0], opt[1],
+                          opt[2], opt[3], opt[4]))**2)
     return chi_cuadrado
 
 
@@ -72,24 +72,25 @@ def func_distribucion(datos, modelo):
 # Pregunta 1
 
 Data = np.loadtxt("espectro.dat")
-Fv = Data[:,1]  #Flujo por unidad de frecuencia
-L_onda = Data[:,0] # Longitud de onda
+Fv = Data[:, 1]  # Flujo por unidad de frecuencia
+L_onda = Data[:, 0]  # Longitud de onda
 
 
 # Obtener ajuste de parametros optimos, gaussiana
 
 Optimos = ajuste_datos(perfil_ajuste_gauss, L_onda, Fv)
 
-print "los parametros optimos para el perfil gaussiano son:" \
-      , "\na =", Optimos[0]\
-      , "\nb =", Optimos[1]\
-      , "\nc =", Optimos[2]\
-      , "\nmu =", Optimos[3]\
-      , "\nsigma =", Optimos[4]
-print "\nEl valor de X cuadrado es:"\
-      , chi_cuad(perfil_ajuste_gauss,L_onda,Fv,Optimos)
+print "los parametros optimos para el perfil gaussiano son:", \
+        "\na =", Optimos[0],\
+        "\nb =", Optimos[1],\
+        "\nc =", Optimos[2],\
+        "\nmu =", Optimos[3],\
+        "\nsigma =", Optimos[4]
+print "\nEl valor de X cuadrado es:",\
+       chi_cuad(perfil_ajuste_gauss, L_onda, Fv, Optimos)
 # Plots
-Fv_ajuste = perfil_ajuste_gauss(L_onda, Optimos[0],Optimos[1],Optimos[2],Optimos[3],Optimos[4])
+Fv_ajuste = perfil_ajuste_gauss(L_onda, Optimos[0], Optimos[1],
+                                Optimos[2], Optimos[3], Optimos[4])
 
 plt.figure(1)
 plt.clf()
@@ -104,16 +105,18 @@ plt.show()
 
 Optimos2 = ajuste_datos(perfil_ajuste_lorentz, L_onda, Fv)
 
-print "los parametros optimos para el perfil de lorentz son:" \
-      , "\na =", Optimos2[0]\
-      , "\nb =", Optimos2[1]\
-      , "\nc =", Optimos2[2]\
-      , "\nmu =", Optimos2[3]\
-      , "\nsigma =", Optimos2[4]
-print "\nEl valor de X cuadrado es:"\
-      , chi_cuad(perfil_ajuste_lorentz,L_onda,Fv,Optimos2)
+print "los parametros optimos para el perfil de lorentz son:", \
+       "\na =", Optimos2[0],\
+       "\nb =", Optimos2[1],\
+       "\nc =", Optimos2[2],\
+       "\nmu =", Optimos2[3],\
+       "\nsigma =", Optimos2[4]
+print "\nEl valor de X cuadrado es:",\
+       chi_cuad(perfil_ajuste_lorentz, L_onda, Fv, Optimos2)
 # Plots
-Fv_ajuste2 = perfil_ajuste_lorentz(L_onda, Optimos2[0],Optimos2[1],Optimos2[2],Optimos2[3],Optimos2[4])
+Fv_ajuste2 = perfil_ajuste_lorentz(L_onda, Optimos2[0],
+                                   Optimos2[1], Optimos2[2],
+                                   Optimos2[3], Optimos2[4])
 
 plt.figure(2)
 plt.clf()
@@ -141,22 +144,25 @@ plt.show()
 L_onda_max = np.max(L_onda)
 L_onda_min = np.min(L_onda)
 Fv_ordenado = np.sort(Fv)
-muestra = np.linspace(L_onda_min,
-                    L_onda_max, 1000000)
+muestra = np.linspace(L_onda_min, L_onda_max, 1000000)
 
 
-Fv_modelo_ordenado = np.sort(perfil_ajuste_gauss(muestra, Optimos[0],Optimos[1],Optimos[2],
-                    Optimos[3],Optimos[4]))
+Fv_modelo_ordenado = np.sort(perfil_ajuste_gauss(muestra, Optimos[0],
+                                                 Optimos[1], Optimos[2],
+                                                 Optimos[3], Optimos[4]))
 
-D, p_value = scipy.stats.kstest(Fv_ordenado, func_distribucion, args=(Fv_modelo_ordenado,))
-print "D gauss, p-value Gauss", D, p_value
+D, p_value = scipy.stats.kstest(Fv_ordenado, func_distribucion,
+                                args=(Fv_modelo_ordenado, ))
+print "\nD gauss, p-value Gauss", D, p_value
 
 
 # Modelo Lorentziano
 
-Fv_modelo_ordenado = np.sort(perfil_ajuste_lorentz(muestra, Optimos2[0],Optimos2[1],Optimos2[2],
-                    Optimos2[3],Optimos2[4]))
+Fv_modelo_ordenado = np.sort(perfil_ajuste_lorentz(muestra, Optimos2[0],
+                                                   Optimos2[1], Optimos2[2],
+                                                   Optimos2[3], Optimos2[4]))
 
-D, p_value = scipy.stats.kstest(Fv_ordenado, func_distribucion, args=(Fv_modelo_ordenado,))
+D, p_value = scipy.stats.kstest(Fv_ordenado, func_distribucion,
+                                args=(Fv_modelo_ordenado,))
 
 print "D Lorentz, p-value Lorentz", D, p_value
