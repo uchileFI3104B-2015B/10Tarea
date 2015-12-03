@@ -56,3 +56,19 @@ chi2_2 = chi2(wavelength, Fnu, m2, n2, A2, mu2, sigma2, modelo_Lorentz)
 D_2, p_value2 = kstest(np.sort(Fnu), cdf,
                       args=(np.sort(modelo_Lorentz(x, m2, n2, A2,
                                                    mu2, sigma2)),))
+
+
+print 'm1, n1, A1, mu1, sigma1, chi2_1:' ,m1, n1, A1, mu1, sigma1, chi2_1
+print 'm2, n2, A2, mu2, sigma2, chi2_2:' ,m2, n2, A2, mu2, sigma2, chi2_2
+
+# Plots
+plt.figure(1)
+plt.plot(wavelength, Fnu, color='k' drawstyle='steps-post',
+         label='Datos')
+plt.plot(x, modelo_Gaussiano(x, m1, n1, A1, mu1, sigma1), color='r',
+         label='Modelo Gaussiano')
+plt.plot(x, modelo_Lorentz(x, m2, n2, A2, mu2, sigma2), color='g',
+         label='Modelo Lorentz')
+plt.xlabel('Wavelength [$\AA$]', fontsize=16)
+plt.ylabel('$F_v$[erg s$^{-1}$Hz$^{-1}$cm$^{-2}$]', fontsize=16)
+plt.savefig('Ajustes.eps')
