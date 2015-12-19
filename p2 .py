@@ -1,14 +1,11 @@
 
-
-
-'''modelando con dos mecanismos distintos, gauss y lorentz'''
-
 from __future__ import division
 import numpy as np
 import numpy.random as npr
 import matplotlib.pyplot as plt
 from scipy.optimize import leastsq
 import scipy.stats
+from scipy.stats import kstest
 
 
 def leer(algo):
@@ -55,9 +52,15 @@ def resta_lorentz(c,x):
     yy=recta(a,b,x)
     return yy-l
 
-def chi(c,x,y,rest):
-    X= np.sum((y-rest(c,x))**2)
-    return X
+def cdf(data, modelo):
+    return np.array([np.sum(modelo <= yy) for yy in data]) / len(modelo)
+
+def test (modelo,c,x,y):
+    xmin = np.min(x)
+    xmax = np.max(x)
+    y_modelo_sorted = np.sort(modelo(c, np.linspace(xmin, xmax, 1000)))
+    y_data_sorted = np.sort(y)
+    Dn, proba = kstest(y_data_sorted, cdf, args=(y_modelo_sorted,))
 
 #definimos las funciones a minimizar
 
@@ -72,7 +75,7 @@ def res_lorentz(c,x,y):
 #para correr
 aa=leer("espectro.dat")
 w,f= aa
-c=1*(10**(-16)),6550,1,1*(10**(-16)),0  #segun grafico
+c=1*(10**(-16)),6550,1,1*(10**(-16)),0  #segun grafico A mu sigma a b
 parametros=c[0],c[1],c[2],c[3],c[4]
 aprox_gauss=leastsq(res_gauss, parametros, args=(w,f))
 aprox_lorentz=leastsq(res_lorentz, parametros, args=(w,f))
@@ -80,34 +83,8 @@ aprox_lorentz=leastsq(res_lorentz, parametros, args=(w,f))
 ga= aprox_gauss[0]
 lo= aprox_lorentz[0]
 
-gy= resta_gauss(ga,w)
-ly= resta_lorentz(lo,w)
-
-fig= plt.figure()
-plt.plot(w,f,'+',label="datos")
-plt.plot(w,gy,'-', label= "ajuste gauss")
-plt.plot(w,ly,'-',label="ajuste lorentz")
-plt.xlabel("w [A]")
-plt.ylabel("F_nu [erg/(s Hz cm^2)]")
-plt.title('Ajustes para el espectro')
-plt.legend()
-plt.savefig('1')
-plt.show()
-
-GA,Gmu,Gsigma,Ga,Gb= gauss_valores
-LA,Lmu,Lsigma,La,Lb= lorentz_valores
-
-chig=chi(ga,w,f,resta_gauss)
-chil=chi(lo,w,f,resta_lorentz)
-
-print ("Gauss")
-print (gauss_valores)
 
 
-print ("Lorentz")
-print(lorentz_valores)
-
-print ("Chi^2 Gauss")
-print(chig)
-print ("Chi^2 Lorentz")
-print(chil)
+#
+# print test(resta_gauss,c,w,f)
+# print test(resta_lorentz,c,w,f)
